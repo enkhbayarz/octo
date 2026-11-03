@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 
-import { addDays, fromDayKey, toDayKey } from './dates';
+import { addDays, fromDayKey, toDayKey, today } from './dates';
 
 describe('day keys', () => {
   test('formats local dates with zero padding', () => {
@@ -14,5 +14,11 @@ describe('day keys', () => {
   test('adds days across month and year boundaries', () => {
     expect(addDays('2026-10-31', 1)).toBe('2026-11-01');
     expect(addDays('2027-01-01', -1)).toBe('2026-12-31');
+  });
+});
+
+describe('today', () => {
+  test('is the local day key of the current date', () => {
+    expect(today()).toBe(toDayKey(new Date()));
   });
 });
