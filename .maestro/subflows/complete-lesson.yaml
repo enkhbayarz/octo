@@ -1,0 +1,15 @@
+# Opens the active lesson ${LESSON}, waits until 90% is watched, finishes it and returns home.
+appId: host.exp.Exponent
+---
+- tapOn: '${LESSON}, идэвхтэй'
+- extendedWaitUntil:
+    visible: 'Бэлэн! Дуусгаад +10 XP аваарай'
+    timeout: 60000
+- tapOn: 'Дуусгах'
+- extendedWaitUntil:
+    visible: 'Хичээл дууслаа!'
+    timeout: 10000
+- tapOn: 'Үргэлжлүүлэх'
+- extendedWaitUntil:
+    visible: 'Курсийн ахиц'
+    timeout: 10000

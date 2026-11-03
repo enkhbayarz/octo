@@ -1,0 +1,14 @@
+# Resets saved progress from Profile, which returns the app to onboarding.
+appId: host.exp.Exponent
+---
+- tapOn: 'Профайл'
+- scrollUntilVisible:
+    element: 'Ахиц дахин эхлүүлэх'
+    direction: DOWN
+    visibilityPercentage: 100
+    centerElement: true
+- tapOn: 'Ахиц дахин эхлүүлэх'
+- tapOn: 'Тийм, дахин эхлүүлэх'
+- extendedWaitUntil:
+    visible: 'octolearn'
+    timeout: 10000

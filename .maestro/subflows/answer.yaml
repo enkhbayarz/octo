@@ -1,0 +1,9 @@
+# Picks ${OPTION}, checks it, and continues with the ${NEXT} button on the feedback sheet.
+appId: host.exp.Exponent
+---
+- tapOn: '${OPTION}'
+- tapOn: 'Шалгах'
+- extendedWaitUntil:
+    visible: '${NEXT}'
+    timeout: 5000
+- tapOn: '${NEXT}'
