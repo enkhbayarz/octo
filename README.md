@@ -18,7 +18,7 @@ Everything runs in **Expo Go**. There are no custom native modules, so no dev bu
 | `bun run check`                                   | typecheck + lint + format check + unit tests            |
 | `bun run test`                                    | unit tests (`bun test`, 49 tests)                       |
 | `bun scripts/send-push.ts <token>`                | send a test remote push to a device build               |
-| `bun run e2e`                                     | Maestro end-to-end flow on a simulator (Metro running)  |
+| `bun run e2e`                                     | All Maestro end-to-end flows on a simulator (Metro on)  |
 | `bun run build`                                   | bundles iOS and Android with `expo export` (smoke test) |
 | `bunx eas-cli build --profile preview -p android` | installable APK via EAS                                 |
 
@@ -48,7 +48,7 @@ Everything runs in **Expo Go**. There are no custom native modules, so no dev bu
 - **Push notifications:** on a real device build, turning reminders on also registers an Expo push token (Profile → Push токен хуваалцах). `bun scripts/send-push.ts "<token>" [/path]` sends a test push the way a backend would, and the path opens on tap.
 - **Over-the-air updates:** `expo-updates` checks once per launch, downloads in the background, and shows a "Шинэ хувилбар бэлэн" banner to restart into it. Profile shows the running version and update id.
 
-**P2:** both platforms from one codebase, dark mode, Lottie animated icons, Zustand state management, unit tests plus a Maestro end-to-end test, offline handling.
+**P2:** both platforms from one codebase, dark mode, Lottie animated icons, Zustand state management, unit tests (100% line coverage of the logic) plus six Maestro end-to-end flows covering every screen, offline handling.
 
 **States:** loading (splash until data is ready, video spinner), error (video error with retry and automatic retry when the connection returns; a crash screen via Expo Router's `ErrorBoundary`), offline banner, empty states (`—` before any quiz), and a guard that redirects deep links to locked or unknown lessons to Home.
 
