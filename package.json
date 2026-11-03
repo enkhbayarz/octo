@@ -17,7 +17,7 @@
     "format:check": "prettier --check .",
     "test": "bun test",
     "coverage": "bun test --coverage",
-    "e2e": "maestro test .maestro/core-flow.yaml",
+    "e2e": "maestro test .maestro",
     "check": "bun run typecheck && bun run lint && bun run format:check && bun run test"
   },
   "dependencies": {

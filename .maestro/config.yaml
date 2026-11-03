@@ -1,0 +1,13 @@
+# Runs every flow in order; each one starts where the previous left off.
+#   bun run start   then   bun run e2e
+flows:
+  - '*.yaml'
+executionOrder:
+  continueOnFailure: false
+  flowsOrder:
+    - Onboarding
+    - Unit 1
+    - Rewatch a lesson
+    - Unit 2 and course complete
+    - Profile and settings
+    - Not found
