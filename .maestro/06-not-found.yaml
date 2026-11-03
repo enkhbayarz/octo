@@ -1,0 +1,13 @@
+# An unknown link shows the not-found screen with a way back.
+appId: host.exp.Exponent
+name: Not found
+---
+- openLink: exp://127.0.0.1:8081/--/no-such-page
+- extendedWaitUntil:
+    visible: 'Хуудас олдсонгүй'
+    timeout: 20000
+- assertVisible: 'Энэ холбоос буруу эсвэл хуучирсан байна.'
+- tapOn: 'Нүүр рүү буцах'
+- extendedWaitUntil:
+    visible: 'Англи хэлийг өдөр бүр, хөгжилтэйгээр.|Курсийн ахиц'
+    timeout: 10000
