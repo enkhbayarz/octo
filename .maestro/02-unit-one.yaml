@@ -1,0 +1,140 @@
+# Unit 1: locks, a lesson in detail, all five lessons, and a passed quiz.
+appId: host.exp.Exponent
+name: Unit 1
+---
+- runFlow: subflows/launch.yaml
+- assertVisible: '0 / 10 хичээл · 0%'
+- assertVisible: 'Танилцах'
+
+# Locked items don't open (the toast wording is covered by unit tests;
+# it hides before Maestro can read the animated screen).
+- tapOn: 'Өөрийгөө танилцуулах, түгжээтэй'
+- assertVisible: 'Курсийн ахиц'
+- assertNotVisible: 'ЭНЭ ХИЧЭЭЛЭЭР СУРАХ ХЭЛЛЭГҮҮД'
+- scrollUntilVisible:
+    element: 'Бүлгийн шалгалт, түгжээтэй'
+    direction: DOWN
+    centerElement: true
+- tapOn: 'Бүлгийн шалгалт, түгжээтэй'
+- assertVisible: 'Курсийн ахиц'
+- assertNotVisible: 'Шалгах'
+
+# A deep link to a locked lesson is sent home.
+- openLink: exp://127.0.0.1:8081/--/lesson/u1-l3
+- extendedWaitUntil:
+    visible: 'Курсийн ахиц'
+    timeout: 10000
+- assertNotVisible: 'Хаанаас ирсэн бэ?.*Хичээл 3 / 5'
+
+# The first lesson in detail.
+- scrollUntilVisible:
+    element: 'Мэндчилгээ, идэвхтэй'
+    direction: UP
+    centerElement: true
+- tapOn: 'Мэндчилгээ, идэвхтэй'
+# Finish stays disabled until 90% is watched (the rule itself is unit-tested).
+- assertVisible:
+    text: 'Дуусгах'
+    enabled: false
+- assertVisible: 'Видеоны 90%-ийг үзэхэд идэвхжинэ.*'
+- assertVisible: '.*Хичээл 1 / 5'
+- assertVisible: 'ЭНЭ ХИЧЭЭЛЭЭР СУРАХ ХЭЛЛЭГҮҮД'
+- assertVisible: 'Hello!'
+- assertVisible: 'Сайн байна уу!'
+# Leaving and coming back resumes the lesson.
+- tapOn: 'Буцах'
+- assertVisible: 'Курсийн ахиц'
+- tapOn: 'Мэндчилгээ, идэвхтэй'
+- extendedWaitUntil:
+    visible: 'Бэлэн! Дуусгаад +10 XP аваарай'
+    timeout: 60000
+- tapOn: 'Дуусгах'
+- extendedWaitUntil:
+    visible: 'Хичээл дууслаа!'
+    timeout: 10000
+- assertVisible: '“Мэндчилгээ” хичээлийг амжилттай үзлээ.'
+- assertVisible: 'Дараагийн хичээл'
+- assertVisible: 'Өөрийгөө танилцуулах'
+- tapOn: 'Үргэлжлүүлэх'
+- extendedWaitUntil:
+    visible: '1 / 10 хичээл · 10%'
+    timeout: 10000
+- assertVisible: 'Streak: 1 өдөр'
+- assertVisible: 'Нийт XP: 10'
+
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Өөрийгөө танилцуулах'
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Хаанаас ирсэн бэ?'
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Тоо 1–10'
+
+# The last lesson opens the quiz.
+- tapOn: 'Салах ёс, идэвхтэй'
+- extendedWaitUntil:
+    visible: 'Бэлэн! Дуусгаад +10 XP аваарай'
+    timeout: 60000
+- tapOn: 'Дуусгах'
+- extendedWaitUntil:
+    visible: 'Шалгалт нээгдлээ!'
+    timeout: 10000
+- assertVisible: '1-р бүлгийн шалгалт · 5 асуулт'
+- tapOn: 'Үргэлжлүүлэх'
+- extendedWaitUntil:
+    visible: '5 / 10 хичээл · 50%'
+    timeout: 10000
+
+# Quiz: Check needs an answer first.
+- tapOn: 'Бүлгийн шалгалт, идэвхтэй'
+- assertVisible: '“Hello” гэдэг ямар утгатай вэ?'
+- tapOn: 'Шалгах'
+- assertVisible: '“Hello” гэдэг ямар утгатай вэ?'
+- assertNotVisible: 'Буруу байна'
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'B, Сайн байна уу', NEXT: 'Үргэлжлүүлэх' }
+
+# Leaving mid-quiz asks first; staying keeps the answers.
+- tapOn: 'Шалгалтаас гарах'
+- assertVisible: 'Шалгалтаас гарах уу?'
+- tapOn: 'Үргэлжлүүлэх'
+- assertVisible: '“My name is Bold” гэдгийг зөв орчуулна уу.'
+
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'A, Намайг Болд гэдэг', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'B, I am from Mongolia.', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'C, 7', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'A, Дараа уулзъя!', NEXT: 'Дүнгээ харах' }
+
+# Result: a pass opens unit 2.
+- extendedWaitUntil:
+    visible: 'Тэнцлээ!'
+    timeout: 10000
+- assertVisible: '5 асуултаас 5 зөв, 100%'
+- assertVisible: '2-р бүлэг нээгдлээ. Үргэлжлүүлээрэй!'
+
+# Review: every answer was right.
+- tapOn: 'Хариултаа харах'
+- assertVisible: 'Хариултын тойм'
+- assertVisible: 'Бүх асуултад зөв хариулсан. Гайхалтай!'
+- runFlow: subflows/close-sheet.yaml
+- assertVisible: 'Тэнцлээ!'
+
+- tapOn: 'Үргэлжлүүлэх'
+- extendedWaitUntil:
+    visible: 'Баярлалаа, уучлаарай, идэвхтэй'
+    timeout: 10000
+- assertVisible: 'Нийт XP: 70'
