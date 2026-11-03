@@ -10,6 +10,7 @@ import {
   getLockReason,
   getProfileStats,
   getWeeklyActivity,
+  isUnlocked,
 } from './selectors';
 import type { Progress } from './types';
 
@@ -63,6 +64,15 @@ describe('path status', () => {
     });
     expect(getLockReason(pathItems, 5)).toEqual({ kind: 'quiz-needs-lessons' });
     expect(getLockReason(pathItems, 6)).toEqual({ kind: 'previous-quiz', unitNumber: 1 });
+  });
+});
+
+describe('route guard', () => {
+  test('opens unlocked items and refuses locked or unknown ones', () => {
+    const progress = createProgress(day);
+    expect(isUnlocked('u1-l1', progress)).toBe(true);
+    expect(isUnlocked('u1-l2', progress)).toBe(false);
+    expect(isUnlocked('no-such-item', progress)).toBe(false);
   });
 });
 
