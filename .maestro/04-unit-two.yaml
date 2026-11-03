@@ -1,0 +1,110 @@
+# Unit 2: leaving a quiz, failing it, reviewing mistakes, retaking, finishing the course.
+appId: host.exp.Exponent
+name: Unit 2 and course complete
+---
+- runFlow: subflows/launch.yaml
+- assertVisible: 'Өдөр тутмын яриа'
+
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Баярлалаа, уучлаарай'
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Цаг асуух, хэлэх'
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Хоол захиалах'
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Зам асуух'
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Цаг агаар'
+- assertVisible: '10 / 10 хичээл · 100%'
+
+# Leaving mid-quiz discards the answers.
+- tapOn: 'Бүлгийн шалгалт, идэвхтэй'
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'A, Баярлалаа', NEXT: 'Үргэлжлүүлэх' }
+- tapOn: 'Шалгалтаас гарах'
+- assertVisible: 'Шалгалтаас гарах уу?'
+- tapOn: 'Гарах'
+- extendedWaitUntil:
+    visible: 'Бүлгийн шалгалт, идэвхтэй'
+    timeout: 10000
+
+# Two of five is a fail.
+- tapOn: 'Бүлгийн шалгалт, идэвхтэй'
+# A wrong answer shows the right one.
+- tapOn: 'B, Уучлаарай'
+- tapOn: 'Шалгах'
+# The feedback is announced as one sentence, with the right answer.
+- extendedWaitUntil:
+    visible: 'Буруу байна, Зөв хариулт: Баярлалаа'
+    timeout: 5000
+- assertVisible: 'A, Баярлалаа, зөв хариулт'
+- assertVisible: 'B, Уучлаарай, буруу хариулт'
+- tapOn: 'Үргэлжлүүлэх'
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'A, Хэдэн настай вэ?', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'C, Welcome', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'A, Тооцоогоо хийх үед', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'C, Өнөөдөр нартай', NEXT: 'Дүнгээ харах' }
+- extendedWaitUntil:
+    visible: 'Бараг л болчихлоо!'
+    timeout: 10000
+- assertVisible: '5 асуултаас 2 зөв, 40%'
+
+# Review shows the mistakes with the right answers.
+- tapOn: 'Алдаагаа харах (3)'
+- assertVisible: '3 алдаа. Зөв хариултыг нь давтаад дахин оролдоорой.'
+- assertVisible: '1. .*Таны хариулт: Уучлаарай. Буруу. Зөв хариулт: Баярлалаа.'
+- runFlow: subflows/close-sheet.yaml
+
+# Retake and pass: the course is done.
+- tapOn: 'Дахин өгөх'
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'A, Баярлалаа', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'B, Хэдэн цаг болж байна?', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'B, Sorry', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'A, Тооцоогоо хийх үед', NEXT: 'Үргэлжлүүлэх' }
+- runFlow:
+    file: subflows/answer.yaml
+    env: { OPTION: 'C, Өнөөдөр нартай', NEXT: 'Дүнгээ харах' }
+- extendedWaitUntil:
+    visible: 'Тэнцлээ!'
+    timeout: 10000
+- assertVisible: 'Бүх бүлгийг дуусгалаа! Дараагийн бүлэг тун удахгүй нээгдэнэ.'
+- tapOn: 'Үргэлжлүүлэх'
+- extendedWaitUntil:
+    visible: 'Курс дууслаа!'
+    timeout: 10000
+
+# Upcoming units are announced but not open.
+- scrollUntilVisible:
+    element: 'Нисэх буудал, түгжээтэй'
+    direction: DOWN
+- assertVisible: 'Тун удахгүй'
+- tapOn: 'Нисэх буудал, түгжээтэй'
+- assertVisible: 'Тун удахгүй'
+- assertNotVisible: 'ЭНЭ ХИЧЭЭЛЭЭР СУРАХ ХЭЛЛЭГҮҮД'
