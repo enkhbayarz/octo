@@ -1,0 +1,13 @@
+# Relaunches Expo Go on the app and waits for its first screen. Expo Go now and
+# then drops back to its own home screen while reloading, so the link is retried.
+appId: host.exp.Exponent
+---
+- stopApp
+- retry:
+    maxRetries: 3
+    commands:
+      - openLink: exp://127.0.0.1:8081?__expo_disable_fab=1&__expo_disable_onboarding=1
+      - extendedWaitUntil:
+          visible: 'Англи хэлийг өдөр бүр, хөгжилтэйгээр.|Курсийн ахиц'
+          timeout: 30000
+- waitForAnimationToEnd

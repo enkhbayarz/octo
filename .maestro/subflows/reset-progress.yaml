@@ -10,5 +10,5 @@ appId: host.exp.Exponent
 - tapOn: 'Ахиц дахин эхлүүлэх'
 - tapOn: 'Тийм, дахин эхлүүлэх'
 - extendedWaitUntil:
-    visible: 'octolearn'
+    visible: 'Англи хэлийг өдөр бүр, хөгжилтэйгээр.'
     timeout: 10000

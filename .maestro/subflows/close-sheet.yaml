@@ -1,0 +1,7 @@
+# Drags a form sheet down by its grabber.
+appId: host.exp.Exponent
+---
+- swipe:
+    start: 50%, 12%
+    end: 50%, 95%
+    duration: 400
