@@ -1,0 +1,386 @@
+{
+  "id": "english-a1",
+  "title": {
+    "mn": "Англи хэл — Анхан шат",
+    "en": "English — Beginner"
+  },
+  "shortTitle": {
+    "mn": "Англи хэл · A1",
+    "en": "English · A1"
+  },
+  "units": [
+    {
+      "id": "u1",
+      "title": {
+        "mn": "Танилцах",
+        "en": "Getting to know you"
+      },
+      "lessons": [
+        {
+          "id": "u1-l1",
+          "title": {
+            "mn": "Мэндчилгээ",
+            "en": "Greetings"
+          },
+          "description": {
+            "mn": "Өдрийн аль ч цагт хэрхэн мэндлэх, “Сайн уу?” гэж асуухыг сурна.",
+            "en": "Learn how to greet people at any time of day and ask “How are you?”."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "Hello!",
+              "mn": "Сайн байна уу!"
+            },
+            {
+              "en": "Good morning!",
+              "mn": "Өглөөний мэнд!"
+            },
+            {
+              "en": "How are you?",
+              "mn": "Сайн уу? Юу байна?"
+            }
+          ]
+        },
+        {
+          "id": "u1-l2",
+          "title": {
+            "mn": "Өөрийгөө танилцуулах",
+            "en": "Introductions"
+          },
+          "description": {
+            "mn": "Нэр, нас, хаана амьдардгаа англиар энгийнээр хэлж сурна.",
+            "en": "Say your name, age and where you live in simple English."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "My name is Bold.",
+              "mn": "Намайг Болд гэдэг."
+            },
+            {
+              "en": "I am 20 years old.",
+              "mn": "Би 20 настай."
+            },
+            {
+              "en": "Nice to meet you!",
+              "mn": "Танилцсандаа таатай байна!"
+            }
+          ]
+        },
+        {
+          "id": "u1-l3",
+          "title": {
+            "mn": "Хаанаас ирсэн бэ?",
+            "en": "Where are you from?"
+          },
+          "description": {
+            "mn": "Улс, хотоо англиар хэлэх энгийн хэллэгүүд.",
+            "en": "Simple phrases for saying which country and city you’re from."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "Where are you from?",
+              "mn": "Та хаанаас ирсэн бэ?"
+            },
+            {
+              "en": "I am from Mongolia.",
+              "mn": "Би Монголоос ирсэн."
+            },
+            {
+              "en": "I live in Ulaanbaatar.",
+              "mn": "Би Улаанбаатарт амьдардаг."
+            }
+          ]
+        },
+        {
+          "id": "u1-l4",
+          "title": {
+            "mn": "Тоо 1–10",
+            "en": "Numbers 1–10"
+          },
+          "description": {
+            "mn": "Нэгээс арав хүртэлх тоог зөв дуудаж, хэрэглэж сурна.",
+            "en": "Pronounce and use the numbers one to ten."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "One, two, three",
+              "mn": "Нэг, хоёр, гурав"
+            },
+            {
+              "en": "Seven",
+              "mn": "Долоо"
+            },
+            {
+              "en": "Ten",
+              "mn": "Арав"
+            }
+          ]
+        },
+        {
+          "id": "u1-l5",
+          "title": {
+            "mn": "Салах ёс",
+            "en": "Saying goodbye"
+          },
+          "description": {
+            "mn": "Яриагаа эелдгээр дуусгаж, баяртай гэх олон арга.",
+            "en": "Polite ways to end a conversation and say goodbye."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "Goodbye!",
+              "mn": "Баяртай!"
+            },
+            {
+              "en": "See you later!",
+              "mn": "Дараа уулзъя!"
+            },
+            {
+              "en": "Have a nice day!",
+              "mn": "Сайхан өдөр өнгөрүүлээрэй!"
+            }
+          ]
+        }
+      ],
+      "quiz": {
+        "id": "u1-quiz",
+        "passPercent": 60,
+        "questions": [
+          {
+            "text": "“Hello” гэдэг ямар утгатай вэ?",
+            "options": ["Баяртай", "Сайн байна уу", "Баярлалаа"],
+            "answerIndex": 1
+          },
+          {
+            "text": "“My name is Bold” гэдгийг зөв орчуулна уу.",
+            "options": ["Намайг Болд гэдэг", "Болд хаана байна?", "Би Болдтой уулзсан"],
+            "answerIndex": 0
+          },
+          {
+            "text": "“Би Монголоос ирсэн” англиар юу вэ?",
+            "options": ["I go to Mongolia.", "I am from Mongolia.", "I like Mongolia."],
+            "answerIndex": 1
+          },
+          {
+            "text": "“Seven” гэдэг аль тоо вэ?",
+            "options": ["5", "9", "7"],
+            "answerIndex": 2
+          },
+          {
+            "text": "“See you later!” гэдэг ямар утгатай вэ?",
+            "options": ["Дараа уулзъя!", "Өглөөний мэнд!", "Уучлаарай!"],
+            "answerIndex": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "u2",
+      "title": {
+        "mn": "Өдөр тутмын яриа",
+        "en": "Everyday conversation"
+      },
+      "lessons": [
+        {
+          "id": "u2-l1",
+          "title": {
+            "mn": "Баярлалаа, уучлаарай",
+            "en": "Thanks & sorry"
+          },
+          "description": {
+            "mn": "Талархал илэрхийлэх, уучлал гуйх эелдэг хэллэгүүд.",
+            "en": "Polite phrases for thanking someone and apologising."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "Thank you!",
+              "mn": "Баярлалаа!"
+            },
+            {
+              "en": "I am sorry.",
+              "mn": "Уучлаарай."
+            },
+            {
+              "en": "You are welcome.",
+              "mn": "Зүгээр ээ."
+            }
+          ]
+        },
+        {
+          "id": "u2-l2",
+          "title": {
+            "mn": "Цаг асуух, хэлэх",
+            "en": "Telling the time"
+          },
+          "description": {
+            "mn": "Цаг хэд болж байгааг асууж, хариулж сурна.",
+            "en": "Ask for the time and tell someone what time it is."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "What time is it?",
+              "mn": "Хэдэн цаг болж байна?"
+            },
+            {
+              "en": "It’s three o’clock.",
+              "mn": "Гурван цаг болж байна."
+            },
+            {
+              "en": "Half past five",
+              "mn": "Таван цаг хагас"
+            }
+          ]
+        },
+        {
+          "id": "u2-l3",
+          "title": {
+            "mn": "Хоол захиалах",
+            "en": "Ordering food"
+          },
+          "description": {
+            "mn": "Кафе, ресторанд захиалга өгч, тооцоогоо хийх хэллэгүүд.",
+            "en": "Order at a café or restaurant and ask for the bill."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "I would like a coffee.",
+              "mn": "Би кофе авмаар байна."
+            },
+            {
+              "en": "How much is it?",
+              "mn": "Энэ хэд вэ?"
+            },
+            {
+              "en": "The bill, please.",
+              "mn": "Тооцоогоо авъя."
+            }
+          ]
+        },
+        {
+          "id": "u2-l4",
+          "title": {
+            "mn": "Зам асуух",
+            "en": "Asking directions"
+          },
+          "description": {
+            "mn": "Хаана байгааг асууж, зам зааврыг ойлгож сурна.",
+            "en": "Ask where places are and follow simple directions."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "Where is the bus stop?",
+              "mn": "Автобусны буудал хаана байна?"
+            },
+            {
+              "en": "Turn left.",
+              "mn": "Зүүн тийш эргэ."
+            },
+            {
+              "en": "Go straight.",
+              "mn": "Чигээрээ яв."
+            }
+          ]
+        },
+        {
+          "id": "u2-l5",
+          "title": {
+            "mn": "Цаг агаар",
+            "en": "The weather"
+          },
+          "description": {
+            "mn": "Өнөөдрийн цаг агаарын талаар энгийнээр ярилцах.",
+            "en": "Talk about today’s weather in simple English."
+          },
+          "videoUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_2MB.mp4",
+          "durationSec": 10,
+          "phrases": [
+            {
+              "en": "It’s sunny today.",
+              "mn": "Өнөөдөр нартай байна."
+            },
+            {
+              "en": "It’s cold.",
+              "mn": "Хүйтэн байна."
+            },
+            {
+              "en": "It’s raining.",
+              "mn": "Бороо орж байна."
+            }
+          ]
+        }
+      ],
+      "quiz": {
+        "id": "u2-quiz",
+        "passPercent": 60,
+        "questions": [
+          {
+            "text": "“Thank you” гэдэг ямар утгатай вэ?",
+            "options": ["Баярлалаа", "Уучлаарай", "Баяртай"],
+            "answerIndex": 0
+          },
+          {
+            "text": "“What time is it?” гэж юу асууж байна вэ?",
+            "options": ["Хэдэн настай вэ?", "Хэдэн цаг болж байна?", "Хаана байна вэ?"],
+            "answerIndex": 1
+          },
+          {
+            "text": "“Уучлаарай” англиар юу вэ?",
+            "options": ["Please", "Sorry", "Welcome"],
+            "answerIndex": 1
+          },
+          {
+            "text": "“The bill, please.” гэж хэзээ хэлэх вэ?",
+            "options": ["Тооцоогоо хийх үед", "Хоол захиалах үед", "Мэндлэх үед"],
+            "answerIndex": 0
+          },
+          {
+            "text": "“It’s sunny today” гэдэг ямар утгатай вэ?",
+            "options": ["Өнөөдөр бороотой", "Өнөөдөр хүйтэн", "Өнөөдөр нартай"],
+            "answerIndex": 2
+          }
+        ]
+      }
+    }
+  ],
+  "upcomingUnits": [
+    {
+      "id": "u3",
+      "title": {
+        "mn": "Аялал",
+        "en": "Travel"
+      },
+      "lessonTitles": [
+        {
+          "mn": "Нисэх буудал",
+          "en": "At the airport"
+        },
+        {
+          "mn": "Зочид буудал",
+          "en": "At the hotel"
+        },
+        {
+          "mn": "Дэлгүүр хэсэх",
+          "en": "Shopping"
+        }
+      ]
+    }
+  ]
+}
