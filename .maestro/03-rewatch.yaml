@@ -1,0 +1,14 @@
+# A finished lesson can be watched again without earning XP twice.
+appId: host.exp.Exponent
+name: Rewatch a lesson
+---
+- runFlow: subflows/launch.yaml
+# Deep links open finished lessons (and are refused for locked ones, see Unit 1).
+- openLink: exp://127.0.0.1:8081/--/lesson/u1-l1
+- extendedWaitUntil:
+    visible: 'Энэ хичээлийг өмнө нь дуусгасан'
+    timeout: 20000
+- assertVisible: '.*Үзсэн'
+- tapOn: 'Нүүр рүү буцах'
+- assertVisible: 'Курсийн ахиц'
+- assertVisible: 'Нийт XP: 70'
