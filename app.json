@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "OctoLearn",
+    "slug": "octolearn",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "octolearn",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "bundleIdentifier": "com.octolearn.prototype",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.octolearn.prototype",
+      "adaptiveIcon": {
+        "backgroundColor": "#FFEEE3",
+        "foregroundImage": "./assets/images/adaptive-icon.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-router",
+      "expo-video",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#CC4C0A"
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F2701F",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 220,
+          "dark": {
+            "backgroundColor": "#F2701F",
+            "image": "./assets/images/splash-icon.png"
+          }
+        }
+      ],
+      "expo-localization"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
