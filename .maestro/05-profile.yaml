@@ -1,0 +1,99 @@
+# Profile: stats, every setting, and resetting progress.
+appId: host.exp.Exponent
+name: Profile and settings
+---
+- runFlow: subflows/launch.yaml
+- tapOn: 'Профайл'
+- assertVisible: 'Тэмүүлэн'
+- assertVisible: 'Түвшин 2'
+- assertVisible: 'Энэ долоо хоног'
+# Each stat tile is read as one "label: value" sentence.
+- assertVisible: 'Streak: \d+ өдөр'
+- assertVisible: 'Нийт XP: 140'
+- assertVisible: 'Дууссан хичээл: 10 / 10'
+- assertVisible: 'Тэнцсэн шалгалт: 2 / 2'
+- assertVisible: 'Шалгалтын дундаж: 100%'
+- assertVisible: 'Курсийн ахиц: 100%'
+
+# Language: switch to English and back.
+- scrollUntilVisible:
+    element: 'English'
+    direction: DOWN
+    centerElement: true
+- tapOn: 'English'
+- assertVisible: 'Settings'
+- assertVisible: 'Profile'
+- tapOn: 'Монгол'
+- assertVisible: 'Тохиргоо'
+
+# Appearance: dark, light, then back to the system setting.
+- tapOn: 'Харанхуй'
+- assertVisible:
+    text: 'Харанхуй'
+    selected: true
+- takeScreenshot: profile-dark
+- tapOn: 'Гэрэл'
+- assertVisible:
+    text: 'Гэрэл'
+    selected: true
+- tapOn:
+    text: 'Систем'
+    index: 1
+
+# Sound off and on. The row's text and its switch share a name; the switch is second.
+- tapOn:
+    text: 'Дуу'
+    index: 1
+- assertVisible:
+    text: 'Дуу'
+    index: 1
+    checked: false
+- tapOn:
+    text: 'Дуу'
+    index: 1
+- assertVisible:
+    text: 'Дуу'
+    checked: true
+
+# Reminders: make sure they end up on, pick an hour, send a test.
+- runFlow:
+    when:
+      visible: 'Туршилтын мэдэгдэл илгээх'
+    commands:
+      - tapOn:
+          text: 'Өдөр бүрийн сануулга'
+          index: 1
+- assertNotVisible: 'Туршилтын мэдэгдэл илгээх'
+- tapOn:
+    text: 'Өдөр бүрийн сануулга'
+    index: 1
+- runFlow:
+    when:
+      visible: 'Allow'
+    commands:
+      - tapOn: 'Allow'
+- extendedWaitUntil:
+    visible: 'Туршилтын мэдэгдэл илгээх'
+    timeout: 10000
+- tapOn: '09:00'
+- assertVisible: 'Өдөр бүр 09:00-д, хичээл үзсэн өдөр сануулахгүй'
+- tapOn: '19:00'
+- scrollUntilVisible:
+    element: 'Туршилтын мэдэгдэл илгээх'
+    direction: DOWN
+    centerElement: true
+- tapOn: 'Туршилтын мэдэгдэл илгээх'
+- assertVisible: 'Тохиргоо'
+
+# Reset: cancel keeps everything, confirm returns to onboarding.
+- scrollUntilVisible:
+    element: 'Ахиц дахин эхлүүлэх'
+    direction: DOWN
+    visibilityPercentage: 100
+    centerElement: true
+- tapOn: 'Ахиц дахин эхлүүлэх'
+- assertVisible: 'Ахицаа устгах уу?'
+- tapOn: 'Цуцлах'
+- assertVisible: 'Ахиц дахин эхлүүлэх'
+- assertNotVisible: 'Ахицаа устгах уу?'
+- runFlow: subflows/reset-progress.yaml
