@@ -1,0 +1,66 @@
+# Onboarding: welcome, three questions, the reminder offer and a name.
+appId: host.exp.Exponent
+name: Onboarding
+---
+- runFlow: subflows/launch.yaml
+# Start from a clean slate.
+- runFlow:
+    when:
+      visible: 'Нүүр'
+    file: subflows/reset-progress.yaml
+
+- assertVisible: 'Англи хэлийг өдөр бүр, хөгжилтэйгээр.'
+- tapOn: 'Эхлэх'
+
+# Continue does nothing until an answer is picked.
+- assertVisible: 'Англи хэлийг юунд сурмаар байна?'
+- tapOn: 'Үргэлжлүүлэх'
+- assertVisible: 'Англи хэлийг юунд сурмаар байна?'
+- assertVisible: 'Ажилдаа'
+- assertVisible: 'Сургуульдаа'
+- assertVisible: 'Кино, дуу ойлгохын тулд'
+- assertVisible: 'Бусад'
+- tapOn: 'Аялалд'
+- tapOn: 'Үргэлжлүүлэх'
+
+# Back returns to the previous question with its answer kept.
+- assertVisible: 'Англи хэлээ хэр мэдэх вэ?'
+- tapOn: 'Буцах'
+- assertVisible: 'Англи хэлийг юунд сурмаар байна?'
+- assertVisible:
+    text: 'Аялалд'
+    selected: true
+- tapOn: 'Үргэлжлүүлэх'
+
+- assertVisible: 'Хэдэн үг мэднэ'
+- assertVisible: 'Энгийн яриа хийж чадна'
+- tapOn: 'Шинээр эхэлж байна'
+- tapOn: 'Үргэлжлүүлэх'
+
+- assertVisible: 'Өдөрт хэдэн минут суралцах вэ?'
+- assertVisible: '5 минут / өдөр, Хөнгөн'
+- assertVisible: '15 минут / өдөр, Нухацтай'
+- assertVisible: '20 минут / өдөр, Эрчимтэй'
+- tapOn: '10 минут / өдөр, Тогтмол'
+- tapOn: 'Тохирлоо!'
+
+# The reminder offer is skipped when reminders are already on.
+- runFlow:
+    when:
+      visible: 'Одоо биш'
+    commands:
+      - assertVisible: 'Өдөр бүр би танд сануулж байя!'
+      - tapOn: 'Одоо биш'
+
+# Start stays disabled until there is a name.
+- assertVisible: 'Таныг хэн гэдэг вэ?'
+- tapOn: 'Эхлэх'
+- assertVisible: 'Таныг хэн гэдэг вэ?'
+- tapOn: 'Таны нэр'
+- inputText: 'Тэмүүлэн'
+- tapOn: 'Эхлэх'
+- extendedWaitUntil:
+    visible: '0 / 10 хичээл · 0%'
+    timeout: 10000
+- assertVisible: 'Streak: 0 өдөр'
+- assertVisible: 'Нийт XP: 0'
