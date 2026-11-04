@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { View } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { makeStyles, useColors } from '@/theme/theme';
 import { controlHeight, radius, space } from '@/theme/tokens';
@@ -11,24 +11,40 @@ type StatPillProps = {
   value: ReactNode;
   accessibilityLabel: string;
   tone?: 'plain' | 'fire';
+  onPress: () => void;
+  /** Its panel is open. */
+  expanded?: boolean;
 };
 
-/** Rounded counter in the home header (streak, XP). */
-export function StatPill({ icon, value, accessibilityLabel, tone = 'plain' }: StatPillProps) {
+/** Rounded counter in the home header (streak, XP). Tapping it opens its panel. */
+export function StatPill({
+  icon,
+  value,
+  accessibilityLabel,
+  tone = 'plain',
+  onPress,
+  expanded = false,
+}: StatPillProps) {
   const styles = useStyles();
   const colors = useColors();
   const fire = tone === 'fire';
   return (
-    <View
-      accessible
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      style={[styles.pill, fire && styles.fire]}
+      accessibilityState={{ expanded }}
+      style={({ pressed }) => [
+        styles.pill,
+        fire && styles.fire,
+        (pressed || expanded) && styles.active,
+      ]}
     >
       {icon}
       <AppText weight="bold" tabular color={fire ? colors.fireText : colors.ink}>
         {value}
       </AppText>
-    </View>
+    </Pressable>
   );
 }
 
@@ -48,5 +64,9 @@ const useStyles = makeStyles((colors) => ({
   fire: {
     backgroundColor: colors.fireLight,
     borderColor: colors.fireBorder,
+  },
+  active: {
+    borderColor: colors.inkSoft,
+    transform: [{ scale: 0.96 }],
   },
 }));
