@@ -189,8 +189,7 @@ export const mn = {
     totalXp: 'Нийт XP',
     lessonsDone: 'Дууссан хичээл',
     quizzesPassed: 'Тэнцсэн шалгалт',
-    quizAverage: 'Шалгалтын дундаж',
-    courseProgress: 'Курсийн ахиц',
+    overview: 'Тойм',
     thisWeek: 'Энэ долоо хоног',
     today: 'Өнөөдөр',
     /** Sunday first, matching `Date.getDay()`. */

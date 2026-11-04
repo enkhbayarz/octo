@@ -31,11 +31,11 @@ export function StatTile({ tone, icon, value, label }: StatTileProps) {
   return (
     <View style={styles.tile} accessible accessibilityLabel={`${label}: ${value}`}>
       <View style={[styles.icon, { backgroundColor: background }]}>{icon(foreground)}</View>
-      <View>
-        <AppText variant="title" tabular>
+      <View style={styles.text}>
+        <AppText variant="heading" tabular numberOfLines={1}>
           {value}
         </AppText>
-        <AppText variant="label" color={colors.muted}>
+        <AppText variant="caption" weight="medium" color={colors.muted}>
           {label}
         </AppText>
       </View>
@@ -47,12 +47,17 @@ const useStyles = makeStyles((colors) => ({
   tile: {
     flexBasis: '47%',
     flexGrow: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: space[3],
-    padding: space[4],
+    padding: space[3],
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.line,
     backgroundColor: colors.card,
+  },
+  text: {
+    flex: 1,
   },
   icon: {
     width: 40,

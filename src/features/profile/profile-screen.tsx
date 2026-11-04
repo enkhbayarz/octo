@@ -1,19 +1,16 @@
-import Constants from 'expo-constants';
-import { Alert, Platform, Pressable, ScrollView, View } from 'react-native';
+import { router } from 'expo-router';
+import { Platform, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { usesGlassTabBar, useTabBarInset } from '@/components/glass-tab-bar';
 import { LottieIcon, type LottieIconName } from '@/components/lottie-icon';
-import { showToast } from '@/components/toast';
-import { appVersionLabel } from '@/components/update-banner';
 import { AppText } from '@/components/ui/app-text';
 import { Icon } from '@/components/ui/icon';
+import { IconButton } from '@/components/ui/icon-button';
 import { ProgressBar } from '@/components/ui/progress-bar';
-import { ProgressRing } from '@/components/ui/progress-ring';
 import { quizCount } from '@/course';
 import { useT } from '@/i18n';
 import { fromDayKey, today } from '@/lib/dates';
-import { haptics } from '@/lib/haptics';
 import { currentStreak } from '@/progress/rules';
 import {
   getCourseProgress,
@@ -24,10 +21,9 @@ import {
 import { useProgress } from '@/progress/store';
 import { useAccount } from '@/sync/use-account';
 import { makeStyles, useColors } from '@/theme/theme';
-import { controlHeight, gutter, radius, space } from '@/theme/tokens';
+import { gutter, radius, space } from '@/theme/tokens';
 
-import { AccountCard } from './account-card';
-import { SettingsCard } from './settings-card';
+import { GuestCard } from './account-card';
 import { StatTile } from './stat-tile';
 import { WeeklyChart } from './weekly-chart';
 
@@ -40,28 +36,12 @@ export function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
   const progress = useProgress();
-  const reset = useProgress((state) => state.reset);
   const { signedIn } = useAccount();
   const day = today();
   const streak = currentStreak(progress, day);
   const course = getCourseProgress(progress);
   const stats = getProfileStats(progress);
   const joined = fromDayKey(progress.joinedOn);
-
-  const confirmReset = () => {
-    haptics.warning();
-    Alert.alert(t.profile.resetTitle, t.profile.resetBody, [
-      { text: t.common.cancel, style: 'cancel' },
-      {
-        text: t.profile.resetConfirm,
-        style: 'destructive',
-        onPress: () => {
-          reset();
-          showToast(t.profile.resetDone, 'refresh');
-        },
-      },
-    ]);
-  };
 
   return (
     // Not collapsable, so native tabs still find the ScrollView for their insets.
@@ -71,12 +51,17 @@ export function ProfileScreen() {
         // iOS native tabs already inset the first ScrollView for the status bar; Android and the
         // glass tab bar don't.
         contentContainerStyle={{
-          paddingTop: (Platform.OS === 'ios' && !usesGlassTabBar ? 0 : insets.top) + space[6],
+          paddingTop: (Platform.OS === 'ios' && !usesGlassTabBar ? 0 : insets.top) + space[2],
           paddingBottom: tabBarInset + space[10],
         }}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.head}>
+          <View style={styles.topBar}>
+            <IconButton label={t.settings.title} onPress={() => router.push('/settings')}>
+              <Icon name="settings" color={colors.inkSoft} size={26} />
+            </IconButton>
+          </View>
           <View
             style={styles.avatar}
             accessibilityLabel={t.profile.avatarLabel(progress.learnerName, stats.level)}
@@ -119,6 +104,9 @@ export function ProfileScreen() {
           </View>
         </View>
 
+        <AppText variant="caption" color={colors.muted} style={styles.sectionTitle}>
+          {t.profile.overview}
+        </AppText>
         <View style={styles.grid}>
           <StatTile
             tone="fire"
@@ -146,50 +134,15 @@ export function ProfileScreen() {
             value={`${stats.quizzesPassed} / ${quizCount}`}
             label={t.profile.quizzesPassed}
           />
-          <StatTile
-            tone="sky"
-            icon={(color) => <LottieIcon name="target" color={color} delay={700} />}
-            value={stats.averageScore === null ? '—' : `${stats.averageScore}%`}
-            label={t.profile.quizAverage}
-          />
-          <StatTile
-            tone="primary"
-            icon={(color) => (
-              <ProgressRing
-                percent={course.percent}
-                size={20}
-                stroke={3.5}
-                color={color}
-                trackColor={colors.primaryMid}
-              />
-            )}
-            value={`${course.percent}%`}
-            label={t.profile.courseProgress}
-          />
         </View>
 
         <WeeklyChart days={getWeeklyActivity(progress, day)} />
 
-        <AccountCard />
-
-        <SettingsCard />
-
-        {/* Signed in, progress lives in the profile; "start over" would just sync back. */}
         {signedIn ? null : (
-          <Pressable
-            onPress={confirmReset}
-            accessibilityRole="button"
-            style={({ pressed }) => [styles.reset, pressed && styles.resetPressed]}
-          >
-            <LottieIcon name="refresh" color={colors.dangerDark} size={20} />
-            <AppText weight="semibold" color={colors.dangerDark}>
-              {t.profile.reset}
-            </AppText>
-          </Pressable>
+          <View style={styles.guest}>
+            <GuestCard />
+          </View>
         )}
-        <AppText variant="caption" weight="medium" color={colors.muted} align="center">
-          {appVersionLabel(t.profile.version(Constants.expoConfig?.version ?? '—'))}
-        </AppText>
       </ScrollView>
       {/* Keeps scrolled content from running under the clock and battery. */}
       <View style={[styles.statusBar, { height: insets.top }]} pointerEvents="none" />
@@ -212,6 +165,11 @@ const useStyles = makeStyles((colors) => ({
   head: {
     alignItems: 'center',
     paddingHorizontal: gutter,
+  },
+  topBar: {
+    alignSelf: 'stretch',
+    alignItems: 'flex-end',
+    marginRight: -space[2],
   },
   avatar: {
     width: 96,
@@ -259,27 +217,21 @@ const useStyles = makeStyles((colors) => ({
     alignItems: 'center',
     gap: space[2],
   },
+  sectionTitle: {
+    marginTop: space[6],
+    marginBottom: space[2],
+    paddingHorizontal: gutter,
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
+  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: space[3],
-    paddingTop: space[3],
     paddingHorizontal: gutter,
   },
-  reset: {
-    height: controlHeight.button,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space[2],
-    margin: gutter,
-    marginTop: space[6],
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: colors.dangerBorder,
-  },
-  resetPressed: {
-    backgroundColor: colors.dangerLight,
+  guest: {
+    marginTop: space[3],
+    marginHorizontal: gutter,
   },
 }));
