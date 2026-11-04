@@ -3,3 +3,7 @@ dist
 .expo
 assets/lottie
 bun.lock
+server/drizzle/meta
+server/coverage
+server/dist
+server/bun.lock

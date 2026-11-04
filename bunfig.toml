@@ -1,0 +1,3 @@
+# The app's unit tests live in src/. The API in server/ has its own runner (vitest).
+[test]
+root = "./src"
