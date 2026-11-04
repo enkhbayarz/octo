@@ -78,6 +78,9 @@ export function LessonVideo({ player, status, isOffline, onRetry }: LessonVideoP
   const [fullscreen, setFullscreen] = useState(false);
   // Until the first frame, loading covers the frame; after that a stall only shows a spinner.
   const [hasFrame, setHasFrame] = useState(false);
+  // The modal doesn't always get fresh landscape insets, so the side margin is the largest inset
+  // either way round: in portrait the Dynamic Island's is `top`, in landscape it's `left`/`right`.
+  const side = Math.max(insets.left, insets.right, insets.top, space[6]);
 
   const enterFullscreen = () => {
     setFullscreen(true);
@@ -150,7 +153,11 @@ export function LessonVideo({ player, status, isOffline, onRetry }: LessonVideoP
         <View
           style={[
             styles.fullscreen,
-            { paddingLeft: insets.left, paddingRight: insets.right, paddingBottom: insets.bottom },
+            {
+              paddingHorizontal: side,
+              paddingTop: space[3],
+              paddingBottom: Math.max(insets.bottom, space[5]),
+            },
           ]}
         >
           <View style={styles.fullscreenSafe}>
