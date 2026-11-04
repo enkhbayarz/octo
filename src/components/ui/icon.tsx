@@ -27,6 +27,100 @@ const ICONS = {
       <Circle cx={12} cy={19.6} r={1.2} fill={color} />
     </>
   ),
+  play: (color: string) => (
+    <Path
+      fill={color}
+      d="M7.5 5.6v12.8c0 1.1 1.2 1.8 2.2 1.2l10-6.4c.9-.6.9-1.8 0-2.4l-10-6.4c-1-.6-2.2.1-2.2 1.2z"
+    />
+  ),
+  pause: (color: string) => (
+    <Path d="M8 6v12M16 6v12" stroke={color} strokeWidth={3.6} {...STROKE} />
+  ),
+  replay: (color: string) => (
+    <Path
+      d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4.5v4h4"
+      stroke={color}
+      strokeWidth={2.4}
+      {...STROKE}
+    />
+  ),
+  // Open rings for the ±5s buttons; the number is drawn in the middle by the caller.
+  skipBack: (color: string) => (
+    <Path
+      d="M4 12a8 8 0 1 0 8-8M14.5 1.5L12 4l2.5 2.5"
+      stroke={color}
+      strokeWidth={2.2}
+      {...STROKE}
+    />
+  ),
+  skipForward: (color: string) => (
+    <Path
+      d="M20 12a8 8 0 1 1-8-8M9.5 1.5L12 4 9.5 6.5"
+      stroke={color}
+      strokeWidth={2.2}
+      {...STROKE}
+    />
+  ),
+  volume: (color: string) => (
+    <>
+      <Path
+        fill={color}
+        d="M3.5 9.8v4.4c0 .6.4 1 1 1h2.8l4 3.4c.6.5 1.7.1 1.7-.8V6.2c0-.9-1.1-1.3-1.7-.8l-4 3.4H4.5c-.6 0-1 .4-1 1z"
+      />
+      <Path
+        d="M16 9a4.2 4.2 0 0 1 0 6M18.8 6.3a8 8 0 0 1 0 11.4"
+        stroke={color}
+        strokeWidth={2.2}
+        {...STROKE}
+      />
+    </>
+  ),
+  volumeOff: (color: string) => (
+    <>
+      <Path
+        fill={color}
+        d="M3.5 9.8v4.4c0 .6.4 1 1 1h2.8l4 3.4c.6.5 1.7.1 1.7-.8V6.2c0-.9-1.1-1.3-1.7-.8l-4 3.4H4.5c-.6 0-1 .4-1 1z"
+      />
+      <Path d="M16.5 9.5l5 5M21.5 9.5l-5 5" stroke={color} strokeWidth={2.2} {...STROKE} />
+    </>
+  ),
+  fullscreen: (color: string) => (
+    <Path
+      d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"
+      stroke={color}
+      strokeWidth={2.4}
+      {...STROKE}
+    />
+  ),
+  fullscreenExit: (color: string) => (
+    <Path
+      d="M9 4v4a1 1 0 0 1-1 1H4M15 4v4a1 1 0 0 0 1 1h4M20 15h-4a1 1 0 0 0-1 1v4M4 15h4a1 1 0 0 1 1 1v4"
+      stroke={color}
+      strokeWidth={2.4}
+      {...STROKE}
+    />
+  ),
+  pip: (color: string) => (
+    <>
+      <Path
+        d="M20 10.5V6.5A1.5 1.5 0 0 0 18.5 5h-13A1.5 1.5 0 0 0 4 6.5v11A1.5 1.5 0 0 0 5.5 19H10"
+        stroke={color}
+        strokeWidth={2.2}
+        {...STROKE}
+      />
+      <Path
+        fill={color}
+        d="M13.5 13h7a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z"
+      />
+    </>
+  ),
+  sliders: (color: string) => (
+    <>
+      <Path d="M4 7h9M19 7h1M4 17h1M11 17h9" stroke={color} strokeWidth={2.2} {...STROKE} />
+      <Circle cx={16} cy={7} r={2.5} stroke={color} strokeWidth={2.2} fill="none" />
+      <Circle cx={8} cy={17} r={2.5} stroke={color} strokeWidth={2.2} fill="none" />
+    </>
+  ),
 } as const;
 
 export type IconName = keyof typeof ICONS;
