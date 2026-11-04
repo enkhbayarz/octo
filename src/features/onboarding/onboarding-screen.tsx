@@ -196,9 +196,13 @@ export function OnboardingScreen() {
   }[step];
 
   return (
+    // KeyboardAvoidingView owns paddingBottom (it sets it to the keyboard's height, 0 when
+    // closed), so the home-indicator inset goes on the footer instead. The negative offset
+    // stops it being counted twice while the keyboard, which covers that area, is open.
     <KeyboardAvoidingView
-      style={[styles.screen, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
+      style={[styles.screen, { paddingTop: insets.top }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={-insets.bottom}
     >
       {step === 'intro' ? null : (
         <View style={styles.header}>
@@ -321,7 +325,7 @@ export function OnboardingScreen() {
         ) : null}
       </Animated.View>
 
-      <View style={styles.footer}>{footer}</View>
+      <View style={[styles.footer, { paddingBottom: insets.bottom + space[4] }]}>{footer}</View>
     </KeyboardAvoidingView>
   );
 }
