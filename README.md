@@ -62,9 +62,10 @@ src/
     quiz/[id]/          quiz, result screen, review sheet
     welcome.tsx         first-run onboarding (3 questions, reminder, name)
   features/             one folder per screen area: screens, their private components, their logic
-    home/ lesson/ quiz/ profile/ onboarding/
+    home/ lesson/ quiz/ profile/ onboarding/ auth/ (sign-in sheet: Google, Apple, email code)
   course/               course.json + types + the ordered learning path
   progress/             rules (pure), selectors (pure), store (Zustand + AsyncStorage)
+  sync/                 outbox, sync engine, merge with the account (pure, tested), API client
   settings/             theme, sound and reminder preferences (kept when progress is reset)
   notifications/        reminder planning (pure, tested), scheduling, push token, tap handling
   components/           shared UI: ui/ primitives (text, button, icons…), mascot, toast, confetti
@@ -77,6 +78,33 @@ server/                 the API (Node, Hono, Postgres, Redis, Clerk) deployed on
 ```
 
 It follows Expo's recommended layout (`src/app` for routes only, kebab-case files, tests next to the code they test) and organises screens by feature.
+
+## Accounts and sync
+
+A profile is optional, Duolingo style: you can learn as a guest, fully offline, exactly as before.
+
+**Getting a profile:**
+
+- Onboarding offers "Ахицаа хадгалах уу?" (Save your progress?) with a "Later" option, and the Profile tab keeps a "Create a profile" card.
+- The welcome screen has "Надад профайл бий" (I already have a profile).
+- Sign-in is a sheet: **Google**, **Apple** (iOS), or **email + a 6-digit code**.
+  - The email code works for new and returning learners alike, with no password.
+  - Google and Apple open a secure browser sheet, so everything runs in Expo Go. Native buttons would need a development build.
+
+**How sync works:**
+
+- **Offline-first:** the Zustand store is still what the UI reads, so every action is instant and works offline.
+- **Outbox:** while you're signed in, each change also goes into a persisted outbox (`src/sync`). That covers lessons, quiz attempts (each with an `Idempotency-Key`), video positions and profile edits.
+- **Sending:** the sync engine sends the outbox in order when you're online, the app comes to the foreground, or something changes. It retries with backoff and jitter. A change the server rejects for good is dropped so it can't block the rest.
+- **Pulling back:** once the outbox is empty, the engine pulls the account's progress and merges it in. The server is authoritative for XP, streak and quiz results; local items it hasn't received yet are kept.
+- **First sign-in:** guest progress is replayed to the account in learning-path order (name, onboarding answers, lessons, passed quizzes).
+- **Signing out:** this clears the phone. Signing in again, on any phone, brings the progress back.
+
+**Setup:**
+
+- `.env` holds the public Clerk publishable key and the API URL. Without them the app is guest-only.
+- In the Clerk dashboard, **Password → Sign-up with password must be off**, or email-code sign-up stops at "missing password".
+- `.maestro/07-account.yaml` tests the whole round trip against the real Clerk development instance and the Railway API. It uses Clerk test addresses (`…+clerk_test@…`, code `424242`).
 
 ## Push and OTA setup (one-time, needs your Expo account)
 
@@ -109,14 +137,15 @@ An installed build picks an update up within up to two cold launches (download, 
 
 ## Assumptions and things skipped
 
-- No backend or login: the learner is a local profile created in onboarding. Content comes from `src/course/course.json`.
+- Course content still ships inside the app (`src/course/course.json`). The API serves the same course, but the app doesn't fetch it yet. Progress syncs; content doesn't.
 - The videos are public 10-second sample clips (Big Buck Bunny, Sintel, Jellyfish). They are placeholders, not real lesson content.
 - The web build isn't configured.
 
 ## With more time
 
 - Real lesson videos (HLS) with subtitles that highlight each phrase as it is spoken.
-- A Node.js + SQL backend with accounts, syncing progress across devices.
+- Fetch course content from the API (ETag-cached), so lessons can change without an app update.
+- Native Google/Apple buttons in a development build.
 - Spaced-repetition review of missed quiz questions.
 - Dynamic Type checks, component tests, and running the Maestro flow in CI.
 
