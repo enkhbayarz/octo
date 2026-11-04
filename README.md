@@ -13,14 +13,14 @@ bun run start        # scan the QR code with Expo Go, or press i / a
 
 Everything runs in **Expo Go**. There are no custom native modules, so no dev build is needed.
 
-| Script                                            | What it does                                            |
-| ------------------------------------------------- | ------------------------------------------------------- |
-| `bun run check`                                   | typecheck + lint + format check + unit tests            |
-| `bun run test`                                    | unit tests (`bun test`, 49 tests)                       |
-| `bun scripts/send-push.ts <token>`                | send a test remote push to a device build               |
-| `bun run e2e`                                     | All Maestro end-to-end flows on a simulator (Metro on)  |
-| `bun run build`                                   | bundles iOS and Android with `expo export` (smoke test) |
-| `bunx eas-cli build --profile preview -p android` | installable APK via EAS                                 |
+| Script                                            | What it does                                                                 |
+| ------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `bun run check`                                   | typecheck + lint + format check + unit tests                                 |
+| `bun run test`                                    | unit tests (`bun test`, 49 tests)                                            |
+| `bun scripts/send-push.ts <token>`                | send a test remote push to a device build                                    |
+| `bun run e2e`                                     | All Maestro end-to-end flows on a simulator (Metro from `bun run start:e2e`) |
+| `bun run build`                                   | bundles iOS and Android with `expo export` (smoke test)                      |
+| `bunx eas-cli build --profile preview -p android` | installable APK via EAS                                                      |
 
 ## What's in it
 
@@ -138,12 +138,12 @@ An installed build picks an update up within up to two cold launches (download, 
 ## Assumptions and things skipped
 
 - Course content still ships inside the app (`src/course/course.json`). The API serves the same course, but the app doesn't fetch it yet. Progress syncs; content doesn't.
-- The videos are public 10-second sample clips (Big Buck Bunny, Sintel, Jellyfish). They are placeholders, not real lesson content.
+- Each lesson is a real 10–15 minute video from Octolearn's own channel (JustOrgil), streamed as adaptive HLS from a Railway Bucket through the API and its CDN (see `server/README.md`). They are about learning languages, not the A1 phrases themselves, which stay as the lesson text and quizzes until A1 videos are recorded.
 - The web build isn't configured.
 
 ## With more time
 
-- Real lesson videos (HLS) with subtitles that highlight each phrase as it is spoken.
+- A1 lesson videos with subtitles that highlight each phrase as it is spoken.
 - Fetch course content from the API (ETag-cached), so lessons can change without an app update.
 - Native Google/Apple buttons in a development build.
 - Spaced-repetition review of missed quiz questions.

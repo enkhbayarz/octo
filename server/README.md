@@ -45,6 +45,7 @@ Every success is `{ "data": … }`. Every failure is `{ "error": { "code", "mess
 | POST   | `/webhooks/clerk`                         | Svix signature            | `user.created` / `updated` / `deleted`                                       |
 | GET    | `/health/live`, `/health/ready`           | –                         | Liveness; readiness (Postgres required, Redis optional)                      |
 | GET    | `/metrics`, `/internal/stats`             | `METRICS_TOKEN`           | Prometheus; human-readable CPU / RAM / event loop / pool                     |
+| GET    | `/media/videos/:lessonId/…`               | –                         | Lesson video (HLS) streamed from the media bucket; CDN-cacheable             |
 
 Locked items return `409 ITEM_LOCKED`. The server enforces the same "finish the previous item first" rule as the app, so the leaderboard can't be farmed.
 
@@ -169,6 +170,49 @@ What happens on each deploy, from those service settings:
   - Run `railway connect Redis`, then `CONFIG SET maxmemory-policy allkeys-lru`.
   - That lasts until Redis restarts. To make it permanent, add `--maxmemory-policy allkeys-lru` to the Redis service's start command.
 - **Replicas:** set `numReplicas` in the service settings. The app is stateless: rate limits, caches and the leaderboard live in Redis, and jobs are guarded by advisory locks.
+
+### Lesson videos (Railway Bucket + CDN)
+
+Each lesson is a 10–15 minute video from the Octolearn (JustOrgil) channel, served as HLS: a `master.m3u8` listing 360p / 540p / 720p, each cut into 6-second segments. Playback starts after one small segment, seeking is instant, and quality adapts on weak mobile connections. `expo-video` plays HLS natively.
+
+```
+videos/<lessonId>/master.m3u8
+videos/<lessonId>/{360p,540p,720p}/index.m3u8 + seg_NNN.ts
+videos/<lessonId>/poster.jpg
+```
+
+**How it's served:**
+
+- The files live in a **private Railway Bucket** (S3-compatible).
+- The API streams them at `GET /media/…`:
+  - Segments are sent as `immutable` (cached for a year); playlists for 5 minutes.
+  - Byte ranges and `If-None-Match` work, so seeking and revalidation are cheap.
+  - Only `videos/<lesson>/…` files with known extensions are served: no listing, no other prefixes.
+- With **Railway's CDN** on the `api` service, viewers are served from the edge and the API only sees cache misses.
+- Every other response is `Cache-Control: no-store`, so the CDN can never cache a signed-in learner's data.
+
+**Where the URLs come from:** the database stores a path (`/media/videos/u1-l1/master.m3u8`). The API returns it as an absolute URL on `PUBLIC_URL`, which defaults to `https://$RAILWAY_PUBLIC_DOMAIN`. A domain or CDN change therefore needs no content migration.
+
+**Setup:**
+
+```bash
+# 1. The bucket, next to the api service (Singapore)
+railway bucket create octolearn-media --region sin --json
+railway bucket credentials --bucket octolearn-media --json   # note endpoint, keys, urlStyle
+
+# 2. Give the api service the credentials (plus AWS_S3_URL_STYLE=path if urlStyle is "path")
+railway variable set --service api \
+  AWS_ENDPOINT_URL=<endpoint> AWS_ACCESS_KEY_ID=<key> AWS_SECRET_ACCESS_KEY=<secret> \
+  AWS_S3_BUCKET_NAME=<bucketName> AWS_DEFAULT_REGION=<region> --skip-deploys
+
+# 3. Encode and upload (from server/, needs ffmpeg). Uploads resume if interrupted.
+bun run media:transcode <video.mp4> u1-l1 ./media 900     # prints the duration in seconds
+railway run --service api -- bun run media:upload ./media
+
+# 4. Deploy (seeds the new video paths), then put the CDN in front
+railway up ./server --path-as-root --service api --detach
+railway cdn enable --service api --json
+```
 
 ### Clerk (development instance)
 
