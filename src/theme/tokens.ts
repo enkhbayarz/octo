@@ -58,6 +58,10 @@ const light = {
   skyLight: '#E0F2FE',
 
   video: '#1E120B',
+  /** Player chrome. Video is always dark, so these match in both themes. */
+  videoScrim: 'rgba(0, 0, 0, 0.45)',
+  videoTrack: 'rgba(255, 255, 255, 0.3)',
+  videoBuffered: 'rgba(255, 255, 255, 0.55)',
   shadow: 'rgba(28, 25, 23, 0.5)',
 
   /** Floating glass tab bar (iOS 18 and earlier): wash over the blur, rim light and selected lens. */
@@ -122,6 +126,9 @@ const dark: Palette = {
   skyLight: '#10283A',
 
   video: '#000000',
+  videoScrim: 'rgba(0, 0, 0, 0.45)',
+  videoTrack: 'rgba(255, 255, 255, 0.3)',
+  videoBuffered: 'rgba(255, 255, 255, 0.55)',
   shadow: 'rgba(0, 0, 0, 0.6)',
 
   glass: 'rgba(33, 29, 26, 0.38)',
