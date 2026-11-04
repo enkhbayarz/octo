@@ -12,6 +12,12 @@ import { watchedRatio } from './watch-progress';
 const SAVE_EVERY = 2;
 
 /**
+ * End-to-end runs (`bun run start:e2e`) start each lesson 3s before its end, so
+ * a flow doesn't sit through 15 minutes of video. The finish rules still run.
+ */
+const E2E = process.env.EXPO_PUBLIC_E2E === '1';
+
+/**
  * Owns the video player for one lesson and reports how much has been watched.
  * Playback state lives in the native player; React only mirrors what the UI needs.
  * The resume point and furthest position are saved, so leaving a lesson halfway
@@ -36,7 +42,7 @@ export function useLessonPlayer({ id: lessonId, videoUrl: url, durationSec }: Le
   useEventListener(player, 'statusChange', ({ status: next }) => {
     if (next !== 'readyToPlay' || resumed.current) return;
     resumed.current = true;
-    const position = saved?.position ?? 0;
+    const position = E2E ? player.duration - 3 : (saved?.position ?? 0);
     // Skip resuming for a tiny head start or a spot right at the end.
     if (position > 1 && position < player.duration - 1)
       player.seekBy(position - player.currentTime);
