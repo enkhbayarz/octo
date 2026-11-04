@@ -25,7 +25,6 @@ import {
   hasUnsavedAnswers,
   initialQuizSession,
   quizSessionReducer,
-  scoreChoices,
 } from './quiz-session';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -96,7 +95,7 @@ export function QuizScreen({ quiz, unitNumber }: QuizScreenProps) {
       dispatch({ type: 'next' });
       return;
     }
-    const outcome = submitQuiz(quiz.id, scoreChoices(quiz.questions, session.choices));
+    const outcome = submitQuiz(quiz.id, session.choices);
     setResult({ choices: encodeChoices(session.choices), xp: outcome.xpGained });
   };
 
