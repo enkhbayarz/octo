@@ -57,7 +57,8 @@ name: Account and sync
 - tapOn: '6 оронтой код'
 - inputText: '424242'
 
-# The guest's lesson uploads to the new account.
+# The guest's lesson uploads to the new account; Settings shows it saved.
+- runFlow: subflows/open-settings.yaml
 - scrollUntilVisible:
     element: 'Бүх ахиц хадгалагдсан'
     direction: DOWN

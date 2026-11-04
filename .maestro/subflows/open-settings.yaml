@@ -1,0 +1,10 @@
+# Opens Settings from the gear on Profile, unless it is already open.
+appId: host.exp.Exponent
+---
+- runFlow:
+    when:
+      notVisible: 'Хаах'
+    commands:
+      - tapOn: 'Профайл'
+      - tapOn: 'Тохиргоо'
+      - assertVisible: 'Хаах'

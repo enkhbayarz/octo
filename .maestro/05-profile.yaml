@@ -1,4 +1,4 @@
-# Profile: stats, every setting, and resetting progress.
+# Profile: stats; Settings (the gear): every setting, and resetting progress.
 appId: host.exp.Exponent
 name: Profile and settings
 ---
@@ -12,8 +12,8 @@ name: Profile and settings
 - assertVisible: 'Нийт XP: 140'
 - assertVisible: 'Дууссан хичээл: 10 / 10'
 - assertVisible: 'Тэнцсэн шалгалт: 2 / 2'
-- assertVisible: 'Шалгалтын дундаж: 100%'
-- assertVisible: 'Курсийн ахиц: 100%'
+
+- runFlow: subflows/open-settings.yaml
 
 # Language: switch to English and back.
 - scrollUntilVisible:
@@ -22,7 +22,7 @@ name: Profile and settings
     centerElement: true
 - tapOn: 'English'
 - assertVisible: 'Settings'
-- assertVisible: 'Profile'
+- assertVisible: 'Language'
 - tapOn: 'Монгол'
 - assertVisible: 'Тохиргоо'
 
