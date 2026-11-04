@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
-/** Counts from the previous value to `target` (ease-out), so earned XP visibly ticks up. */
-export function useCountUp(target: number, duration = 900): number {
-  const [shown, setShown] = useState(target);
-  const from = useRef(target);
+/**
+ * Counts from the previous value to `target` (ease-out), so earned XP visibly ticks up.
+ * `initial` (default: `target`) is where the first render starts counting from.
+ */
+export function useCountUp(target: number, duration = 900, initial = target): number {
+  const [shown, setShown] = useState(initial);
+  const from = useRef(initial);
 
   useEffect(() => {
     const start = from.current;
