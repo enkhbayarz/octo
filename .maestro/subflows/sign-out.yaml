@@ -1,0 +1,17 @@
+# Signs out from Profile (confirming the alert), which returns the app to the welcome screen.
+appId: host.exp.Exponent
+---
+- tapOn: 'Профайл'
+- scrollUntilVisible:
+    element: 'Гарах'
+    direction: DOWN
+    visibilityPercentage: 100
+    centerElement: true
+- tapOn: 'Гарах'
+# The alert's confirm button has the same label; it is the second match.
+- tapOn:
+    text: 'Гарах'
+    index: 1
+- extendedWaitUntil:
+    visible: 'Англи хэлийг өдөр бүр, хөгжилтэйгээр.'
+    timeout: 15000

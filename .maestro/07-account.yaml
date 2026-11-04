@@ -1,0 +1,87 @@
+# Account and sync, against the real Clerk development instance and the Railway API:
+# learn as a guest, create a profile (guest progress uploads), sign out (the phone is
+# wiped), sign back in (progress comes back from the server). Clerk test addresses
+# (+clerk_test) accept the code 424242 and send no real email.
+appId: host.exp.Exponent
+name: Account and sync
+---
+- evalScript: ${output.email = 'octo-e2e-' + Date.now() + '+clerk_test@example.com'}
+- runFlow: subflows/launch.yaml
+- runFlow:
+    when:
+      visible: 'Нүүр'
+    file: subflows/reset-progress.yaml
+
+# A guest, quickly through onboarding.
+- tapOn: 'Эхлэх'
+- tapOn: 'Аялалд'
+- tapOn: 'Үргэлжлүүлэх'
+- tapOn: 'Шинээр эхэлж байна'
+- tapOn: 'Үргэлжлүүлэх'
+- tapOn: '10 минут / өдөр, Тогтмол'
+- tapOn: 'Тохирлоо!'
+- runFlow:
+    when:
+      visible: 'Одоо биш'
+    commands:
+      - tapOn: 'Одоо биш'
+- tapOn: 'Дараа'
+- tapOn: 'Таны нэр'
+- inputText: 'Болд'
+- tapOn: 'Эхлэх'
+- extendedWaitUntil:
+    visible: '0 / 10 хичээл · 0%'
+    timeout: 10000
+
+# Learn something before having a profile.
+- runFlow:
+    file: subflows/complete-lesson.yaml
+    env:
+      LESSON: 'Мэндчилгээ'
+- assertVisible: '1 / 10 хичээл · 10%'
+
+# Profile → create a profile with an email code.
+- tapOn: 'Профайл'
+- scrollUntilVisible:
+    element: 'Профайл үүсгэх'
+    direction: DOWN
+    centerElement: true
+- assertVisible: 'Ахицаа хадгалаарай'
+- tapOn: 'Профайл үүсгэх'
+- tapOn: 'Имэйл хаяг'
+- inputText: ${output.email}
+- tapOn: 'Код авах'
+- extendedWaitUntil:
+    visible: 'Имэйлээ шалгана уу'
+    timeout: 15000
+- tapOn: '6 оронтой код'
+- inputText: '424242'
+
+# The guest's lesson uploads to the new account.
+- scrollUntilVisible:
+    element: 'Бүх ахиц хадгалагдсан'
+    direction: DOWN
+    timeout: 30000
+- assertVisible: ${output.email}
+
+# Signing out clears this phone…
+- runFlow: subflows/sign-out.yaml
+
+# …and signing back in brings the progress back from the server.
+- tapOn: 'Надад профайл бий'
+- assertVisible: 'Профайлдаа нэвтрэх'
+- tapOn: 'Имэйл хаяг'
+- inputText: ${output.email}
+- tapOn: 'Код авах'
+- extendedWaitUntil:
+    visible: 'Имэйлээ шалгана уу'
+    timeout: 15000
+- tapOn: '6 оронтой код'
+- inputText: '424242'
+- extendedWaitUntil:
+    visible: '1 / 10 хичээл · 10%'
+    timeout: 30000
+- assertVisible: 'Нийт XP: 10'
+
+# Leave the device signed out, so the other flows start as a guest.
+- runFlow: subflows/sign-out.yaml

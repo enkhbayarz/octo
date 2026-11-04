@@ -1,4 +1,4 @@
-# Onboarding: welcome, three questions, the reminder offer and a name.
+# Onboarding: welcome, three questions, the reminder offer, the profile offer and a name.
 appId: host.exp.Exponent
 name: Onboarding
 ---
@@ -51,6 +51,11 @@ name: Onboarding
     commands:
       - assertVisible: 'Өдөр бүр би танд сануулж байя!'
       - tapOn: 'Одоо биш'
+
+# Saving progress in a profile is offered, and can wait (07-account covers it).
+- assertVisible: 'Ахицаа хадгалах уу?'
+- assertVisible: 'Профайл үүсгэх'
+- tapOn: 'Дараа'
 
 # Start stays disabled until there is a name.
 - assertVisible: 'Таныг хэн гэдэг вэ?'
