@@ -86,6 +86,13 @@ export function createApp(deps: AppDeps) {
     await next();
   });
   app.use(observe(metrics, state));
+  // Nothing is cacheable unless a route says so (the public course, media). With
+  // Railway's CDN in front, a signed-in response must never be stored and served
+  // to someone else, and the CDN would otherwise apply its default TTL.
+  app.use(async (c, next) => {
+    await next();
+    if (!c.res.headers.has('Cache-Control')) c.res.headers.set('Cache-Control', 'no-store');
+  });
   app.use(timing({ enabled: config.NODE_ENV !== 'production' }));
   app.use(secureHeaders());
   app.use(

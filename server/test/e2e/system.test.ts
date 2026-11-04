@@ -70,6 +70,22 @@ describe('binding', () => {
   });
 });
 
+describe('caching (CDN-safe)', () => {
+  test('nothing is cacheable unless the route says so', async () => {
+    const { newLearner } = app;
+    const { token } = await newLearner();
+    for (const path of ['/v1/me', '/v1/me/progress', '/v1/leaderboard/weekly']) {
+      const { headers } = await app.call(path, { token });
+      expect(headers.get('cache-control')).toBe('no-store');
+    }
+    expect((await app.call('/v1/me')).headers.get('cache-control')).toBe('no-store'); // errors too
+    expect((await app.call('/health/ready')).headers.get('cache-control')).toBe('no-store');
+    expect((await app.call('/v1/courses/english-a1')).headers.get('cache-control')).toContain(
+      'public',
+    );
+  });
+});
+
 describe('CORS', () => {
   test('allows the configured web origin, including preflight', async () => {
     const preflight = await app.call('/v1/me', {
