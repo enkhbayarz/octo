@@ -91,6 +91,24 @@ export const en: Messages = {
     offline: 'You’re offline. Your progress is still saved on this phone.',
     status: { done: 'completed', active: 'available', locked: 'locked' },
   },
+  streakCard: {
+    start: 'Start today!',
+    lit: 'Done today!',
+    risk: (hours) => `${hours}h left!`,
+  },
+  xpCard: {
+    today: (xp) => `+${xp} XP today`,
+    toNext: (xp, level) => `${xp} XP to level ${level}`,
+  },
+  courses: {
+    title: 'Languages',
+    korean: 'Korean',
+    japanese: 'Japanese',
+    chinese: 'Chinese',
+    russian: 'Russian',
+    soonToast: (name) => `${name} is coming soon!`,
+    close: 'Close',
+  },
   locked: {
     quizNeedsLessons: 'Finish all 5 lessons in this unit to take the quiz',
     previousQuiz: (unit) => `Pass the unit ${unit} quiz first`,

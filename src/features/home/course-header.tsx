@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { LottieIcon } from '@/components/lottie-icon';
 import { AppText } from '@/components/ui/app-text';
@@ -6,6 +6,7 @@ import { ProgressBar } from '@/components/ui/progress-bar';
 import { StatPill } from '@/components/ui/stat-pill';
 import { useCountUp } from '@/hooks/use-count-up';
 import { useT } from '@/i18n';
+import { haptics } from '@/lib/haptics';
 import { makeStyles, useColors } from '@/theme/theme';
 import { controlHeight, gutter, radius, space } from '@/theme/tokens';
 
@@ -19,7 +20,12 @@ type CourseHeaderProps = {
   done: number;
   total: number;
   percent: number;
+  /** Which pill's panel is open. */
+  panel: HeaderPanel | null;
+  onPanel: (panel: HeaderPanel | null) => void;
 };
+
+export type HeaderPanel = 'course' | 'streak' | 'xp';
 
 export function CourseHeader({
   topInset,
@@ -30,28 +36,40 @@ export function CourseHeader({
   done,
   total,
   percent,
+  panel,
+  onPanel,
 }: CourseHeaderProps) {
   const styles = useStyles();
   const colors = useColors();
   const t = useT();
   const shownXp = useCountUp(xp);
+  // A second tap on the same pill closes its panel.
+  const toggle = (next: HeaderPanel) => () => {
+    haptics.tap();
+    onPanel(panel === next ? null : next);
+  };
 
   return (
     <View style={[styles.header, { paddingTop: topInset + space[2] }]}>
       <View style={styles.row}>
-        <View style={styles.course}>
-          <View style={styles.flag}>
-            <AppText variant="caption" weight="bold" color={colors.white}>
-              EN
-            </AppText>
-          </View>
+        <Pressable
+          onPress={toggle('course')}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: panel === 'course' }}
+          style={({ pressed }) => [
+            styles.course,
+            (pressed || panel === 'course') && styles.courseActive,
+          ]}
+        >
           <AppText variant="label" weight="semibold">
             {courseTitle}
           </AppText>
-        </View>
+        </Pressable>
         <View style={styles.pills}>
           <StatPill
             tone={streakLitToday ? 'fire' : 'plain'}
+            onPress={toggle('streak')}
+            expanded={panel === 'streak'}
             accessibilityLabel={t.home.streakLabel(streak)}
             icon={
               <LottieIcon
@@ -64,6 +82,8 @@ export function CourseHeader({
             value={streak}
           />
           <StatPill
+            onPress={toggle('xp')}
+            expanded={panel === 'xp'}
             accessibilityLabel={t.home.totalXpLabel(xp)}
             icon={
               <LottieIcon
@@ -109,20 +129,15 @@ const useStyles = makeStyles((colors) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space[2],
-    paddingLeft: space[1],
-    paddingRight: space[3],
+    paddingHorizontal: space[4],
     borderRadius: radius.full,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.line,
   },
-  flag: {
-    width: 32,
-    height: 32,
-    borderRadius: radius.full,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
+  courseActive: {
+    borderColor: colors.inkSoft,
+    transform: [{ scale: 0.96 }],
   },
   pills: {
     flexDirection: 'row',

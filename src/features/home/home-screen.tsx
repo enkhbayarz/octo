@@ -1,6 +1,14 @@
-import { router } from 'expo-router';
-import { type ReactElement, useEffect, useRef, useState } from 'react';
-import { ScrollView, type ScrollViewInstance, useWindowDimensions, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { type ReactElement, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Pressable,
+  ScrollView,
+  type ScrollViewInstance,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import Animated, { FadeIn, FadeInDown, FadeOut, FadeOutUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTabBarInset } from '@/components/glass-tab-bar';
@@ -19,12 +27,16 @@ import {
   getCourseProgress,
   getItemStatus,
   getLockReason,
+  getProfileStats,
+  getWeeklyActivity,
+  XP_PER_LEVEL,
 } from '@/progress/selectors';
 import { useProgress } from '@/progress/store';
 import { makeStyles, useColors } from '@/theme/theme';
 import { gutter, radius, space } from '@/theme/tokens';
 
-import { CourseHeader } from './course-header';
+import { CourseHeader, type HeaderPanel } from './course-header';
+import { CoursePicker, StreakCard, XpCard } from './header-panels';
 import { lockedMessage } from './locked-message';
 import { layoutPath, NODE_SIZE } from './path-layout';
 import { UnitBanner } from './unit-banner';
@@ -61,6 +73,7 @@ function CourseCompleteCard() {
 
 export function HomeScreen() {
   const styles = useStyles();
+  const colors = useColors();
   const progress = useProgress();
   const t = useT();
   const locale = useLocale();
@@ -73,6 +86,12 @@ export function HomeScreen() {
 
   const active = getActiveItem(pathItems, progress);
   const courseProgress = getCourseProgress(progress);
+  const streak = currentStreak(progress, day);
+  const streakLitToday = progress.streak.lastActiveDay === day;
+
+  // The streak, XP or course panel dropped down from the header; closed when Home is left.
+  const [panel, setPanel] = useState<HeaderPanel | null>(null);
+  useFocusEffect(useCallback(() => () => setPanel(null), []));
 
   // Values that animate when Home becomes visible again (see useValueWhenFocused).
   const shownXp = useValueWhenFocused(progress.xp);
@@ -225,30 +244,96 @@ export function HomeScreen() {
     );
   });
 
+  const renderPanel = (open: HeaderPanel) => {
+    // Synced activity lists every recent day, 0 XP included, so a day counts as studied when it
+    // earned XP, or when it's the streak's last day (a failed quiz earns none but still counts).
+    const week = getWeeklyActivity(progress, day).map((weekDay) => ({
+      ...weekDay,
+      active: weekDay.xp > 0 || weekDay.day === progress.streak.lastActiveDay,
+    }));
+    if (open === 'streak') {
+      return <StreakCard streak={streak} litToday={streakLitToday} week={week} />;
+    }
+    if (open === 'xp') {
+      const stats = getProfileStats(progress);
+      return (
+        <XpCard
+          xp={progress.xp}
+          level={stats.level}
+          xpIntoLevel={stats.xpIntoLevel}
+          xpPerLevel={XP_PER_LEVEL}
+          week={week}
+        />
+      );
+    }
+    return (
+      <CoursePicker
+        title={localize(course.shortTitle, locale)}
+        progress={t.home.lessonsProgress(
+          courseProgress.done,
+          courseProgress.total,
+          courseProgress.percent,
+        )}
+      />
+    );
+  };
+
   return (
     <View style={styles.screen}>
       <CourseHeader
         topInset={insets.top}
         courseTitle={localize(course.shortTitle, locale)}
-        streak={currentStreak(progress, day)}
-        streakLitToday={progress.streak.lastActiveDay === day}
+        streak={streak}
+        streakLitToday={streakLitToday}
         xp={shownXp}
         done={courseProgress.done}
         total={courseProgress.total}
         percent={shownPercent}
+        panel={panel}
+        onPanel={setPanel}
       />
-      {isOffline ? <OfflineBanner /> : null}
-      <ScrollView
-        ref={scrollRef}
-        stickyHeaderIndices={stickyIndices}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: tabBarInset + space[10] }}
-        onLayout={(event) => {
-          viewportHeight.current = event.nativeEvent.layout.height;
-        }}
-      >
-        {children}
-      </ScrollView>
+      <View style={styles.body}>
+        {isOffline ? <OfflineBanner /> : null}
+        <ScrollView
+          ref={scrollRef}
+          stickyHeaderIndices={stickyIndices}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: tabBarInset + space[10] }}
+          onLayout={(event) => {
+            viewportHeight.current = event.nativeEvent.layout.height;
+          }}
+        >
+          {children}
+        </ScrollView>
+
+        {/* Always mounted, so the backdrop and card can animate out. */}
+        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+          {panel ? (
+            <Animated.View
+              entering={FadeIn.duration(180)}
+              exiting={FadeOut.duration(160)}
+              style={[StyleSheet.absoluteFill, { backgroundColor: colors.shadow }]}
+            >
+              <Pressable
+                style={StyleSheet.absoluteFill}
+                onPress={() => setPanel(null)}
+                accessibilityRole="button"
+                accessibilityLabel={t.courses.close}
+              />
+            </Animated.View>
+          ) : null}
+          {panel ? (
+            <Animated.View
+              key={panel}
+              entering={FadeInDown.springify().damping(18).stiffness(220)}
+              exiting={FadeOutUp.duration(160)}
+              style={styles.panel}
+            >
+              {renderPanel(panel)}
+            </Animated.View>
+          ) : null}
+        </View>
+      </View>
     </View>
   );
 }
@@ -257,6 +342,13 @@ const useStyles = makeStyles((colors) => ({
   screen: {
     flex: 1,
     backgroundColor: colors.paper,
+  },
+  body: {
+    flex: 1,
+  },
+  panel: {
+    marginTop: space[3],
+    marginHorizontal: gutter,
   },
   completeCard: {
     flexDirection: 'row',

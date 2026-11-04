@@ -78,6 +78,24 @@ export const mn = {
     offline: 'Сүлжээ тасарсан. Ахиц тань утсан дээр хадгалагдсан хэвээр байна.',
     status: { done: 'дууссан', active: 'идэвхтэй', locked: 'түгжээтэй' },
   },
+  streakCard: {
+    start: 'Өнөөдөр эхлээрэй!',
+    lit: 'Өнөөдөр хийлээ!',
+    risk: (hours: number) => `${hours} цаг үлдлээ!`,
+  },
+  xpCard: {
+    today: (xp: number) => `Өнөөдөр +${xp} XP`,
+    toNext: (xp: number, level: number) => `Түвшин ${level} хүртэл ${xp} XP`,
+  },
+  courses: {
+    title: 'Сурах хэл',
+    korean: 'Солонгос хэл',
+    japanese: 'Япон хэл',
+    chinese: 'Хятад хэл',
+    russian: 'Орос хэл',
+    soonToast: (name: string) => `${name} тун удахгүй нэмэгдэнэ!`,
+    close: 'Хаах',
+  },
   locked: {
     quizNeedsLessons: 'Шалгалт өгөхийн тулд бүлгийн 5 хичээлийг дуусгана уу',
     previousQuiz: (unit: number) => `Эхлээд ${unit}-р бүлгийн шалгалтаа өгнө үү`,
