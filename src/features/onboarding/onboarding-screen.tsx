@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   BackHandler,
@@ -18,19 +19,21 @@ import { IconButton } from '@/components/ui/icon-button';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { useShake } from '@/hooks/use-shake';
 import { useT } from '@/i18n';
+import { accountsEnabled } from '@/lib/config';
 import { haptics } from '@/lib/haptics';
 import { registerForPushAsync, requestPermission } from '@/notifications/notifications';
 import { MAX_NAME_LENGTH, normalizeName } from '@/progress/rules';
 import { useProgress } from '@/progress/store';
 import type { EnglishLevel, LearningReason } from '@/progress/types';
 import { useSettings } from '@/settings/store';
+import { useAccount } from '@/sync/use-account';
 import { makeStyles, useColors } from '@/theme/theme';
 import { fonts, gutter, radius, space, typeScale } from '@/theme/tokens';
 
 import { ChoiceOption } from './choice-option';
 import { OctoSays } from './octo-says';
 
-type Step = 'intro' | 'reason' | 'level' | 'goal' | 'reminder' | 'name';
+type Step = 'intro' | 'reason' | 'level' | 'goal' | 'reminder' | 'account' | 'name';
 
 const REASONS: { value: LearningReason; emoji: string }[] = [
   { value: 'travel', emoji: '✈️' },
@@ -51,8 +54,10 @@ type Goal = (typeof GOALS)[number];
 
 /**
  * First run, Duolingo style: Окто says hi, asks three quick questions, offers a
- * daily reminder, then asks for a name. Saving the name flips the root layout's
- * guard, which swaps this screen for the tabs.
+ * daily reminder, offers to save progress in a profile (optional), then asks
+ * for a name. Saving the name flips the root layout's guard, which swaps this
+ * screen for the tabs. Signing in to a profile that already has a name skips
+ * straight to the tabs (sync fills the name in).
  */
 export function OnboardingScreen() {
   const styles = useStyles();
@@ -63,21 +68,31 @@ export function OnboardingScreen() {
   const setAnswers = useProgress((state) => state.setAnswers);
   const setReminders = useSettings((state) => state.setReminders);
   const setPushToken = useSettings((state) => state.setPushToken);
+  const account = useAccount();
 
   // Someone who reset their progress may already have reminders on; don't ask again.
-  const [steps] = useState<Step[]>(() =>
-    useSettings.getState().reminders
-      ? ['intro', 'reason', 'level', 'goal', 'name']
-      : ['intro', 'reason', 'level', 'goal', 'reminder', 'name'],
-  );
+  const [allSteps] = useState<Step[]>(() => [
+    'intro',
+    'reason',
+    'level',
+    'goal',
+    ...(useSettings.getState().reminders ? [] : (['reminder'] as const)),
+    ...(accountsEnabled ? (['account'] as const) : []),
+    'name',
+  ]);
   const [index, setIndex] = useState(0);
   const [forward, setForward] = useState(true);
   const [reason, setReason] = useState<LearningReason | null>(null);
   const [level, setLevel] = useState<EnglishLevel | null>(null);
   const [goal, setGoal] = useState<Goal | null>(null);
-  const [name, setName] = useState('');
+  // Null until typed: until then a Google/Apple first name is suggested.
+  const [typedName, setName] = useState<string | null>(null);
+  const name = typedName ?? account.firstName ?? '';
   const [focused, setFocused] = useState(false);
   const { shake, style: shakeStyle } = useShake();
+  // Once signed in (here, or earlier from the intro) there's no profile to offer:
+  // the step drops out and whatever followed it takes its place.
+  const steps = account.signedIn ? allSteps.filter((item) => item !== 'account') : allSteps;
   const step = steps[index] ?? 'intro';
 
   const next = () => {
@@ -143,7 +158,18 @@ export function OnboardingScreen() {
   const entering = (forward ? FadeInRight : FadeInLeft).duration(260);
 
   const footer = {
-    intro: <Button label={t.onboarding.getStarted} onPress={next} />,
+    intro: accountsEnabled ? (
+      <View style={styles.footerStack}>
+        <Button label={t.onboarding.getStarted} onPress={next} />
+        <Button
+          label={t.onboarding.haveAccount}
+          onPress={() => router.push({ pathname: '/sign-in', params: { mode: 'sign-in' } })}
+          tone="secondary"
+        />
+      </View>
+    ) : (
+      <Button label={t.onboarding.getStarted} onPress={next} />
+    ),
     reason: <Button label={t.common.continue} onPress={continueOrShake} disabled={!answered} />,
     level: <Button label={t.common.continue} onPress={continueOrShake} disabled={!answered} />,
     goal: <Button label={t.onboarding.commit} onPress={continueOrShake} disabled={!answered} />,
@@ -151,6 +177,12 @@ export function OnboardingScreen() {
       <View style={styles.footerStack}>
         <Button label={t.onboarding.reminderOn} onPress={turnOnReminders} />
         <Button label={t.onboarding.notNow} onPress={next} tone="secondary" />
+      </View>
+    ),
+    account: (
+      <View style={styles.footerStack}>
+        <Button label={t.account.create} onPress={() => router.push('/sign-in')} />
+        <Button label={t.onboarding.later} onPress={next} tone="secondary" />
       </View>
     ),
     name: (
@@ -248,6 +280,15 @@ export function OnboardingScreen() {
             <OctoSays text={t.onboarding.reminderQuestion} layout="stacked" />
             <AppText color={colors.inkSoft} align="center" style={styles.reminderBody}>
               {t.onboarding.reminderBody}
+            </AppText>
+          </View>
+        ) : null}
+
+        {step === 'account' ? (
+          <View style={styles.reminder}>
+            <OctoSays text={t.onboarding.accountQuestion} layout="stacked" />
+            <AppText color={colors.inkSoft} align="center" style={styles.reminderBody}>
+              {t.onboarding.accountBody}
             </AppText>
           </View>
         ) : null}
