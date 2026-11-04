@@ -1,3 +1,5 @@
+import { ClerkProvider } from '@clerk/expo';
+import { tokenCache } from '@clerk/expo/token-cache';
 import {
   Onest_500Medium,
   Onest_600SemiBold,
@@ -23,23 +25,47 @@ import { UpdateBanner } from '@/components/update-banner';
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/i18n';
+import { accountsEnabled, clerkPublishableKey } from '@/lib/config';
 import { useNotificationNavigation, useReminderSync } from '@/notifications/use-notifications';
 import { useProgress, useProgressHydrated } from '@/progress/store';
 import { useSettingsHydrated } from '@/settings/store';
+import { SyncBridge, useSyncHydrated } from '@/sync/sync-bridge';
 import { makeStyles, useColors, useScheme } from '@/theme/theme';
 import { gutter, space } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
 
+/**
+ * Where a guarded route sends a learner without a name (and what sits under
+ * the sign-in sheet). Without it Expo Router would fall back to the first
+ * open route alphabetically, which is now "sign-in".
+ */
+export const unstable_settings = { anchor: 'welcome' };
+
+/**
+ * Accounts are optional: guests learn offline as before. With Clerk configured,
+ * a signed-in learner's progress also syncs to the API (see src/sync).
+ */
 export default function RootLayout() {
+  if (!accountsEnabled) return <App />;
+  return (
+    <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
+      <SyncBridge />
+      <App />
+    </ClerkProvider>
+  );
+}
+
+function App() {
   const colors = useColors();
   const scheme = useScheme();
   const [fontsLoaded, fontError] = useFonts({ Onest_500Medium, Onest_600SemiBold, Onest_700Bold });
   const progressReady = useProgressHydrated();
   const settingsReady = useSettingsHydrated();
+  const syncReady = useSyncHydrated();
   const hasName = useProgress((state) => state.learnerName.length > 0);
   // A font failure falls back to the system font rather than blocking the app.
-  const ready = (fontsLoaded || Boolean(fontError)) && progressReady && settingsReady;
+  const ready = (fontsLoaded || Boolean(fontError)) && progressReady && settingsReady && syncReady;
   // The native splash stays up until AnimatedSplash has drawn the same frame on top of the app.
   const [splashDone, setSplashDone] = useState(false);
 
@@ -91,6 +117,18 @@ export default function RootLayout() {
         <Stack.Protected guard={!hasName}>
           <Stack.Screen name="welcome" options={{ animation: 'fade' }} />
         </Stack.Protected>
+        {/* Reachable from onboarding and from the Profile tab. */}
+        <Stack.Screen
+          name="sign-in"
+          options={{
+            presentation: 'formSheet',
+            sheetGrabberVisible: true,
+            sheetAllowedDetents: [0.85, 1],
+            sheetCornerRadius: 24,
+            contentStyle: { backgroundColor: colors.paper },
+          }}
+        />
+        <Stack.Screen name="sso-callback" options={{ animation: 'none' }} />
       </Stack>
       <ToastHost />
       <UpdateBanner />
