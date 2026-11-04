@@ -1,24 +1,22 @@
 import { router } from 'expo-router';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
-import { showToast } from '@/components/toast';
 import { Mascot } from '@/components/mascot';
 import { LottieIcon } from '@/components/lottie-icon';
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/i18n';
-import { haptics } from '@/lib/haptics';
 import { type Account, useAccount } from '@/sync/use-account';
 import { makeStyles, useColors } from '@/theme/theme';
-import { gutter, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
 
-/** Guest: an invitation to save progress. Signed in: who, whether everything is saved, sign out. */
+/** Guest: an invitation to save progress. Signed in: who, and whether everything is saved. */
 export function AccountCard() {
   const account = useAccount();
-  return account.signedIn ? <SignedIn account={account} /> : <Guest />;
+  return account.signedIn ? <SignedIn account={account} /> : <GuestCard />;
 }
 
-function Guest() {
+export function GuestCard() {
   const styles = useStyles();
   const colors = useColors();
   const t = useT();
@@ -54,25 +52,6 @@ function SignedIn({ account }: { account: Account }) {
             ? { text: t.account.pending(account.pending), color: colors.sun }
             : { text: t.account.synced, color: colors.success };
 
-  const confirmSignOut = () => {
-    haptics.warning();
-    const body =
-      account.pending > 0
-        ? `${t.account.signOutBody}\n\n${t.account.signOutUnsynced(account.pending)}`
-        : t.account.signOutBody;
-    Alert.alert(t.account.signOutTitle, body, [
-      { text: t.common.cancel, style: 'cancel' },
-      {
-        text: t.account.signOut,
-        style: 'destructive',
-        onPress: async () => {
-          await account.signOut();
-          showToast(t.account.signedOut, 'user');
-        },
-      },
-    ]);
-  };
-
   return (
     <View style={styles.card}>
       <View style={styles.row}>
@@ -91,22 +70,18 @@ function SignedIn({ account }: { account: Account }) {
           </View>
         </View>
       </View>
-      <View style={styles.actions}>
-        {account.pending > 0 || account.status === 'failed' ? (
-          <Pressable onPress={account.syncNow} accessibilityRole="button" hitSlop={8}>
-            <AppText variant="label" weight="semibold" color={colors.primaryText}>
-              {t.account.syncNow}
-            </AppText>
-          </Pressable>
-        ) : (
-          <View />
-        )}
-        <Pressable onPress={confirmSignOut} accessibilityRole="button" hitSlop={8}>
-          <AppText variant="label" weight="semibold" color={colors.dangerDark}>
-            {t.account.signOut}
+      {account.pending > 0 || account.status === 'failed' ? (
+        <Pressable
+          onPress={account.syncNow}
+          accessibilityRole="button"
+          hitSlop={8}
+          style={styles.syncNow}
+        >
+          <AppText variant="label" weight="semibold" color={colors.primaryText}>
+            {t.account.syncNow}
           </AppText>
         </Pressable>
-      </View>
+      ) : null}
     </View>
   );
 }
@@ -114,8 +89,6 @@ function SignedIn({ account }: { account: Account }) {
 const useStyles = makeStyles((colors) => ({
   card: {
     gap: space[4],
-    marginHorizontal: gutter,
-    marginTop: space[6],
     padding: space[4],
     borderRadius: radius.md,
     borderWidth: 1,
@@ -149,8 +122,7 @@ const useStyles = makeStyles((colors) => ({
     height: 8,
     borderRadius: radius.full,
   },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  syncNow: {
+    alignSelf: 'flex-start',
   },
 }));

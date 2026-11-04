@@ -102,6 +102,7 @@ function App() {
             options={{ animation: 'fade_from_bottom', gestureEnabled: false }}
           />
           <Stack.Screen name="quiz/[id]/index" options={{ animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="settings" options={{ animation: 'slide_from_bottom' }} />
           <Stack.Screen
             name="quiz/[id]/result"
             options={{ animation: 'fade_from_bottom', gestureEnabled: false }}

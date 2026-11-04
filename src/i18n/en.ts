@@ -213,6 +213,9 @@ export const en: Messages = {
   },
   settings: {
     title: 'Settings',
+    close: 'Close',
+    account: 'Profile',
+    preferences: 'Preferences',
     language: 'Language',
     appearance: 'Appearance',
     system: 'System',

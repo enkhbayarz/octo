@@ -205,6 +205,9 @@ export const mn = {
   },
   settings: {
     title: 'Тохиргоо',
+    close: 'Хаах',
+    account: 'Профайл',
+    preferences: 'Тохируулга',
     language: 'Хэл',
     appearance: 'Харагдах байдал',
     system: 'Систем',

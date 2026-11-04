@@ -13,7 +13,7 @@ import { REMINDER_HOURS } from '@/notifications/reminder-plan';
 import { useProgress } from '@/progress/store';
 import { type LanguagePreference, type ThemePreference, useSettings } from '@/settings/store';
 import { makeStyles, useColors } from '@/theme/theme';
-import { controlHeight, gutter, radius, space } from '@/theme/tokens';
+import { controlHeight, radius, space } from '@/theme/tokens';
 
 const formatHour = (hour: number) => `${String(hour).padStart(2, '0')}:00`;
 
@@ -101,11 +101,7 @@ export function SettingsCard() {
 
   return (
     <View style={styles.card}>
-      <AppText weight="bold" accessibilityRole="header">
-        {t.settings.title}
-      </AppText>
-
-      <AppText variant="label" color={colors.inkSoft} style={styles.label}>
+      <AppText variant="label" color={colors.inkSoft}>
         {t.settings.language}
       </AppText>
       <Segments options={languages} value={settings.language} onChange={settings.setLanguage} />
@@ -194,8 +190,6 @@ export function SettingsCard() {
 
 const useStyles = makeStyles((colors) => ({
   card: {
-    marginTop: space[3],
-    marginHorizontal: gutter,
     padding: space[5],
     borderRadius: radius.lg,
     borderWidth: 1,
