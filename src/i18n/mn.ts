@@ -193,7 +193,6 @@ export const mn = {
     courseProgress: 'Курсийн ахиц',
     thisWeek: 'Энэ долоо хоног',
     today: 'Өнөөдөр',
-    todayShort: 'Өнөө',
     /** Sunday first, matching `Date.getDay()`. */
     weekdays: ['Ня', 'Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя'],
     reset: 'Ахиц дахин эхлүүлэх',

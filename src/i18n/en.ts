@@ -202,7 +202,6 @@ export const en: Messages = {
     courseProgress: 'Course progress',
     thisWeek: 'This week',
     today: 'Today',
-    todayShort: 'Today',
     weekdays: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
     reset: 'Reset progress',
     resetTitle: 'Reset your progress?',

@@ -15,7 +15,8 @@ export function WeeklyChart({ days }: { days: Day[] }) {
   const styles = useStyles();
   const colors = useColors();
   const t = useT();
-  const max = Math.max(30, ...days.map((day) => day.xp));
+  // Scaled to the week's best day, so it always reaches the top: progress should feel big.
+  const max = Math.max(1, ...days.map((day) => day.xp));
   const weekTotal = days.reduce((sum, day) => sum + day.xp, 0);
 
   return (
@@ -53,7 +54,7 @@ export function WeeklyChart({ days }: { days: Day[] }) {
               ]}
             />
             <AppText variant="caption" color={day.isToday ? colors.primaryText : colors.muted}>
-              {day.isToday ? t.profile.todayShort : t.profile.weekdays[day.weekday]}
+              {t.profile.weekdays[day.weekday]}
             </AppText>
           </View>
         ))}
