@@ -28,9 +28,12 @@
     "load": "tsx scripts/load-test.ts",
     "token": "tsx scripts/mint-token.ts",
     "smoke": "tsx scripts/smoke.ts",
-    "clerk-token": "tsx scripts/clerk-token.ts"
+    "clerk-token": "tsx scripts/clerk-token.ts",
+    "media:transcode": "bash scripts/transcode-hls.sh",
+    "media:upload": "tsx scripts/upload-media.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1161.0",
     "@clerk/backend": "^3.26.6",
     "@hono/node-server": "^2.1.6",
     "@hono/zod-openapi": "^1.6.3",

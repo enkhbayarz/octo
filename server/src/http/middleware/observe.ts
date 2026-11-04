@@ -5,7 +5,8 @@ import { routePath } from 'hono/route';
 import type { Metrics } from '../../observability/metrics.js';
 import type { AppEnv } from '../context.js';
 
-const QUIET = /^\/(health|metrics|internal)\b/;
+// Probes, scrapes and video segments (one every few seconds per viewer) log at debug.
+const QUIET = /^\/(health|metrics|internal|media)\b/;
 
 /**
  * One structured log line and one histogram sample per request, labelled with

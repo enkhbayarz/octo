@@ -62,6 +62,23 @@ const EnvSchema = z
     MAX_IN_FLIGHT: int(256),
     REQUEST_TIMEOUT_MS: int(15_000),
     SHUTDOWN_TIMEOUT_MS: int(10_000),
+
+    /**
+     * Where the API is reached from outside, e.g. https://api.example.com. Course
+     * media is stored as paths ("/media/…") and returned as absolute URLs on it.
+     * Defaults to https://$RAILWAY_PUBLIC_DOMAIN (copied in `loadConfig`).
+     */
+    PUBLIC_URL: z.url().optional(),
+
+    // Lesson videos live in an S3-compatible bucket (a Railway Bucket). These are
+    // the names `railway bucket credentials` prints. Without them /media is off.
+    AWS_ENDPOINT_URL: z.url().optional(),
+    AWS_ACCESS_KEY_ID: z.string().optional(),
+    AWS_SECRET_ACCESS_KEY: z.string().optional(),
+    AWS_S3_BUCKET_NAME: z.string().optional(),
+    AWS_DEFAULT_REGION: z.string().default('auto'),
+    /** "path" puts the bucket in the URL path instead of the host name. */
+    AWS_S3_URL_STYLE: z.enum(['virtual-hosted', 'path']).default('virtual-hosted'),
   })
   .refine((env) => env.CLERK_JWT_KEY || env.CLERK_SECRET_KEY, {
     message: 'Set CLERK_JWT_KEY (recommended) or CLERK_SECRET_KEY',
@@ -81,6 +98,9 @@ export function loadConfig(source: Record<string, string | undefined> = process.
   const result = EnvSchema.safeParse({
     ...present,
     RELEASE: present.RELEASE ?? present.RAILWAY_GIT_COMMIT_SHA?.slice(0, 7),
+    PUBLIC_URL:
+      present.PUBLIC_URL ??
+      (present.RAILWAY_PUBLIC_DOMAIN ? `https://${present.RAILWAY_PUBLIC_DOMAIN}` : undefined),
   });
   if (!result.success) {
     const problems = result.error.issues.map(

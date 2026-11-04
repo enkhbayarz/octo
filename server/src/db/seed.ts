@@ -25,7 +25,8 @@ const SeedCourseSchema = z.object({
           id: Id,
           title: Localized,
           description: Localized,
-          videoUrl: z.url(),
+          // An absolute URL, or a path in the media bucket served by /media.
+          videoUrl: z.union([z.url(), z.string().regex(/^\/media\/videos\/[\w./-]+$/)]),
           durationSec: z.number().int().positive(),
           phrases: z.array(z.object({ en: z.string(), mn: z.string() })),
         }),

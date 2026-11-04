@@ -5,6 +5,7 @@ import { Webhook } from 'svix';
 
 import { loadConfig } from '../../src/config/env.js';
 import { createLogger } from '../../src/lib/logger.js';
+import type { MediaStore } from '../../src/media/store.js';
 import { createDeps, startServer } from '../../src/server.js';
 import { TEST_DATABASE_URL, TEST_REDIS_URL } from './env.js';
 
@@ -58,7 +59,7 @@ export type Reply<T = unknown> = { status: number; headers: Headers; body: T };
 
 export async function startTestApp(
   env: Record<string, string> = {},
-  options: { clock?: () => Date } = {},
+  options: { clock?: () => Date; media?: MediaStore | null } = {},
 ) {
   const config = loadConfig({
     NODE_ENV: 'test',
@@ -76,7 +77,11 @@ export async function startTestApp(
     ...env,
   });
   const logger = createLogger({ level: config.LOG_LEVEL, service: 'e2e', release: 'test' });
-  const deps = await createDeps(config, logger, { clock: options.clock });
+  const deps = await createDeps(config, logger, {
+    clock: options.clock,
+    // No bucket in tests unless a test brings its own store.
+    media: options.media ?? null,
+  });
   const running = await startServer(deps);
 
   /** fetch + JSON parse; `token` becomes the Bearer header. */

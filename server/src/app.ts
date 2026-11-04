@@ -22,9 +22,11 @@ import { createRouter } from './http/router.js';
 import { AppError } from './lib/errors.js';
 import type { Logger } from './lib/logger.js';
 import { courseRoutes } from './modules/course/course.routes.js';
+import type { MediaStore } from './media/store.js';
 import { createCourseService } from './modules/course/course.service.js';
 import { healthRoutes } from './modules/health/health.routes.js';
 import { leaderboardRoutes } from './modules/leaderboard/leaderboard.routes.js';
+import { mediaRoutes } from './modules/media/media.routes.js';
 import { createLeaderboardService } from './modules/leaderboard/leaderboard.service.js';
 import { createProgressService } from './modules/progress/progress.service.js';
 import { systemRoutes } from './modules/system/system.routes.js';
@@ -43,6 +45,8 @@ export type AppDeps = {
   redis: Redis;
   metrics: Metrics;
   runtimeStats: RuntimeStats;
+  /** Lesson videos in the bucket; null when the bucket isn't configured. */
+  media: MediaStore | null;
   verifyToken: VerifyToken;
   clock: () => Date;
   state: { shuttingDown: boolean };
@@ -52,7 +56,7 @@ export function createApp(deps: AppDeps) {
   const { config, logger, db, redis, metrics, clock, state } = deps;
 
   const cache = createCache({ redis, logger, metrics });
-  const course = createCourseService({ db, cache });
+  const course = createCourseService({ db, cache, publicUrl: config.PUBLIC_URL });
   const leaderboard = createLeaderboardService({ db, redis, logger, metrics, clock });
   const progress = createProgressService({ db, course, leaderboard, clock });
   const users = createUsersService({ db, clock });
@@ -94,7 +98,9 @@ export function createApp(deps: AppDeps) {
     if (!c.res.headers.has('Cache-Control')) c.res.headers.set('Cache-Control', 'no-store');
   });
   app.use(timing({ enabled: config.NODE_ENV !== 'production' }));
-  app.use(secureHeaders());
+  // Cross-origin resource policy allows other origins: lesson videos are embedded by the
+  // web client, and nothing here is readable without a Bearer token anyway.
+  app.use(secureHeaders({ crossOriginResourcePolicy: 'cross-origin' }));
   app.use(
     cors({
       origin: config.CORS_ORIGINS,
@@ -147,6 +153,7 @@ export function createApp(deps: AppDeps) {
   app.route('/v1/me', meRoutes({ users, progress }, signedIn));
   app.route('/v1/leaderboard', leaderboardRoutes(leaderboard, signedIn));
   app.route('/webhooks', clerkWebhookRoutes(users, config.CLERK_WEBHOOK_SIGNING_SECRET));
+  app.route('/media', mediaRoutes(deps.media));
 
   app.doc31('/openapi.json', {
     openapi: '3.1.0',

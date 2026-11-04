@@ -19,7 +19,20 @@ const COURSE_LIST_TTL_SEC = 5 * 60;
 export type CourseService = ReturnType<typeof createCourseService>;
 export type CachedCourse = { tree: CourseTree; etag: string };
 
-export function createCourseService({ db, cache }: { db: Database; cache: Cache }) {
+/** Media is stored as a path ("/media/…"); clients get it absolute on the API's public URL. */
+export function absoluteUrl(url: string, publicUrl: string | undefined): string {
+  return url.startsWith('/') && publicUrl ? `${publicUrl.replace(/\/$/, '')}${url}` : url;
+}
+
+export function createCourseService({
+  db,
+  cache,
+  publicUrl,
+}: {
+  db: Database;
+  cache: Cache;
+  publicUrl?: string;
+}) {
   /**
    * Loads a whole course in five queries however many units it has: one per
    * table, joined in memory. Fetching each unit's lessons in a loop instead
@@ -77,7 +90,7 @@ export function createCourseService({ db, cache }: { db: Database; cache: Cache 
               id,
               title,
               description,
-              videoUrl,
+              videoUrl: absoluteUrl(videoUrl, publicUrl),
               durationSec,
               phrases,
             })),

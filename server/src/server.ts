@@ -11,13 +11,14 @@ import { createClerkVerifier } from './http/middleware/auth.js';
 import { startCleanupJob } from './jobs/cleanup.js';
 import type { Logger } from './lib/logger.js';
 import { createMetrics } from './observability/metrics.js';
+import { createS3MediaStore } from './media/store.js';
 import { createRuntimeStats } from './observability/runtime-stats.js';
 
 /** Connects to Postgres and Redis and assembles the app's dependencies. */
 export async function createDeps(
   config: Config,
   logger: Logger,
-  overrides: Partial<Pick<AppDeps, 'clock' | 'verifyToken'>> = {},
+  overrides: Partial<Pick<AppDeps, 'clock' | 'verifyToken' | 'media'>> = {},
 ): Promise<AppDeps> {
   const pool = createPool(
     {
@@ -45,6 +46,7 @@ export async function createDeps(
     redis,
     metrics,
     runtimeStats: createRuntimeStats(),
+    media: overrides.media === undefined ? createS3MediaStore(config) : overrides.media,
     verifyToken: overrides.verifyToken ?? createClerkVerifier(config),
     clock: overrides.clock ?? (() => new Date()),
     state: { shuttingDown: false },
