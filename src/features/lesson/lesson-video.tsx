@@ -1,12 +1,7 @@
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { StatusBar } from 'expo-status-bar';
-import {
-  isPictureInPictureSupported,
-  VideoView,
-  type VideoPlayer,
-  type VideoPlayerStatus,
-} from 'expo-video';
-import { useRef, useState } from 'react';
+import { VideoView, type VideoPlayer, type VideoPlayerStatus } from 'expo-video';
+import { useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,8 +21,6 @@ type LessonVideoProps = {
   isOffline: boolean;
   onRetry: () => void;
 };
-
-const canPictureInPicture = isPictureInPictureSupported();
 
 const lock = (orientation: ScreenOrientation.OrientationLock) =>
   ScreenOrientation.lockAsync(orientation).catch(() => {});
@@ -50,16 +43,14 @@ function PlayerSurface({
   showControls,
   onFirstFrame,
 }: PlayerSurfaceProps) {
-  const view = useRef<VideoView>(null);
   return (
     <>
       <VideoView
-        ref={view}
         player={player}
         style={StyleSheet.absoluteFill}
         nativeControls={false}
         contentFit="contain"
-        allowsPictureInPicture={canPictureInPicture}
+        allowsPictureInPicture={false}
         onFirstFrameRender={onFirstFrame}
       />
       {showControls ? (
@@ -68,13 +59,6 @@ function PlayerSurface({
           status={status}
           fullscreen={fullscreen}
           onToggleFullscreen={onToggleFullscreen}
-          onPictureInPicture={
-            canPictureInPicture
-              ? () => {
-                  view.current?.startPictureInPicture().catch(() => {});
-                }
-              : null
-          }
         />
       ) : null}
     </>

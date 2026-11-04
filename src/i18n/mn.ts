@@ -113,7 +113,6 @@ export const mn = {
     unmute: 'Дууг нээх',
     fullscreen: 'Бүтэн дэлгэц',
     exitFullscreen: 'Бүтэн дэлгэцээс гарах',
-    pip: 'Жижиг цонхоор үзэх',
     settings: 'Тохиргоо',
     seekBar: 'Видеоны байрлал',
     speed: 'Хурд',

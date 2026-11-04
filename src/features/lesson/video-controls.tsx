@@ -22,8 +22,6 @@ type VideoControlsProps = {
   /** Inline or in the fullscreen modal; flips the fullscreen button's icon. */
   fullscreen: boolean;
   onToggleFullscreen: () => void;
-  /** Null when the device can't do picture in picture. */
-  onPictureInPicture: (() => void) | null;
 };
 
 type Side = 'back' | 'forward';
@@ -45,7 +43,6 @@ export function VideoControls({
   status,
   fullscreen,
   onToggleFullscreen,
-  onPictureInPicture,
 }: VideoControlsProps) {
   const styles = useStyles();
   const colors = useColors();
@@ -222,9 +219,6 @@ export function VideoControls({
               }}
             />
             <View style={styles.row}>
-              {onPictureInPicture ? (
-                <ControlButton icon="pip" label={t.player.pip} onPress={onPictureInPicture} />
-              ) : null}
               <Pressable
                 onPress={() => setSettingsOpen(true)}
                 accessibilityRole="button"

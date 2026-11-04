@@ -125,7 +125,6 @@ export const en: Messages = {
     unmute: 'Unmute',
     fullscreen: 'Full screen',
     exitFullscreen: 'Exit full screen',
-    pip: 'Picture in picture',
     settings: 'Settings',
     seekBar: 'Video position',
     speed: 'Speed',

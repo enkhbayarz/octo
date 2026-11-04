@@ -100,20 +100,6 @@ const ICONS = {
       {...STROKE}
     />
   ),
-  pip: (color: string) => (
-    <>
-      <Path
-        d="M20 10.5V6.5A1.5 1.5 0 0 0 18.5 5h-13A1.5 1.5 0 0 0 4 6.5v11A1.5 1.5 0 0 0 5.5 19H10"
-        stroke={color}
-        strokeWidth={2.2}
-        {...STROKE}
-      />
-      <Path
-        fill={color}
-        d="M13.5 13h7a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z"
-      />
-    </>
-  ),
   sliders: (color: string) => (
     <>
       <Path d="M4 7h9M19 7h1M4 17h1M11 17h9" stroke={color} strokeWidth={2.2} {...STROKE} />
