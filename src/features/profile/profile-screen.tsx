@@ -22,9 +22,11 @@ import {
   XP_PER_LEVEL,
 } from '@/progress/selectors';
 import { useProgress } from '@/progress/store';
+import { useAccount } from '@/sync/use-account';
 import { makeStyles, useColors } from '@/theme/theme';
 import { controlHeight, gutter, radius, space } from '@/theme/tokens';
 
+import { AccountCard } from './account-card';
 import { SettingsCard } from './settings-card';
 import { StatTile } from './stat-tile';
 import { WeeklyChart } from './weekly-chart';
@@ -39,6 +41,7 @@ export function ProfileScreen() {
   const tabBarInset = useTabBarInset();
   const progress = useProgress();
   const reset = useProgress((state) => state.reset);
+  const { signedIn } = useAccount();
   const day = today();
   const streak = currentStreak(progress, day);
   const course = getCourseProgress(progress);
@@ -167,18 +170,23 @@ export function ProfileScreen() {
 
         <WeeklyChart days={getWeeklyActivity(progress, day)} />
 
+        <AccountCard />
+
         <SettingsCard />
 
-        <Pressable
-          onPress={confirmReset}
-          accessibilityRole="button"
-          style={({ pressed }) => [styles.reset, pressed && styles.resetPressed]}
-        >
-          <LottieIcon name="refresh" color={colors.dangerDark} size={20} />
-          <AppText weight="semibold" color={colors.dangerDark}>
-            {t.profile.reset}
-          </AppText>
-        </Pressable>
+        {/* Signed in, progress lives in the profile; "start over" would just sync back. */}
+        {signedIn ? null : (
+          <Pressable
+            onPress={confirmReset}
+            accessibilityRole="button"
+            style={({ pressed }) => [styles.reset, pressed && styles.resetPressed]}
+          >
+            <LottieIcon name="refresh" color={colors.dangerDark} size={20} />
+            <AppText weight="semibold" color={colors.dangerDark}>
+              {t.profile.reset}
+            </AppText>
+          </Pressable>
+        )}
         <AppText variant="caption" weight="medium" color={colors.muted} align="center">
           {appVersionLabel(t.profile.version(Constants.expoConfig?.version ?? '—'))}
         </AppText>
