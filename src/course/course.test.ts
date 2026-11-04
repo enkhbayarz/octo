@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 
-import { course, findPathItem, lessonCount, pathItems } from '.';
+import { course, findPathItem, lessonCount, pathItems, resolveMediaUrl } from '.';
 
 describe('course content', () => {
   test('meets the brief: 2+ units, 10 lessons, a 3–5 question quiz per unit', () => {
@@ -10,6 +10,14 @@ describe('course content', () => {
       expect(unit.lessons).toHaveLength(5);
       expect(unit.quiz.questions.length).toBeGreaterThanOrEqual(3);
       expect(unit.quiz.questions.length).toBeLessThanOrEqual(5);
+    }
+  });
+
+  test('lessons are 10–15 minute videos, streamed as HLS from the media bucket', () => {
+    for (const lesson of course.units.flatMap((unit) => unit.lessons)) {
+      expect(lesson.durationSec).toBeGreaterThanOrEqual(600);
+      expect(lesson.durationSec).toBeLessThanOrEqual(900);
+      expect(lesson.videoUrl).toEndWith(`/media/videos/${lesson.id}/master.m3u8`);
     }
   });
 
@@ -39,5 +47,19 @@ describe('path', () => {
   test('finds items by id', () => {
     expect(findPathItem('u2-quiz')?.kind).toBe('quiz');
     expect(findPathItem('missing')).toBeUndefined();
+  });
+});
+
+describe('resolveMediaUrl', () => {
+  test('media paths play from the API; full URLs pass through', () => {
+    expect(resolveMediaUrl('/media/videos/u1-l1/master.m3u8', 'https://api.test')).toBe(
+      'https://api.test/media/videos/u1-l1/master.m3u8',
+    );
+    expect(resolveMediaUrl('https://cdn.test/a.mp4', 'https://api.test')).toBe(
+      'https://cdn.test/a.mp4',
+    );
+    expect(resolveMediaUrl('/media/videos/u1-l1/master.m3u8', '')).toBe(
+      '/media/videos/u1-l1/master.m3u8',
+    );
   });
 });

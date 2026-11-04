@@ -1,10 +1,32 @@
+import { apiUrl } from '@/lib/config';
+
 import courseJson from './course.json';
 import type { Course, PathItem } from './types';
 
 export type * from './types';
 
-/** Course content. Typed on assignment, so a malformed course.json fails `tsc`. */
-export const course: Course = courseJson;
+/**
+ * Lesson videos are stored as paths on the API ("/media/videos/…/master.m3u8"),
+ * served from the media bucket through the API and its CDN. Full URLs pass through.
+ */
+export function resolveMediaUrl(url: string, base: string = apiUrl): string {
+  return url.startsWith('/') && base ? `${base}${url}` : url;
+}
+
+/** Typed on assignment, so a malformed course.json fails `tsc`. */
+const source: Course = courseJson;
+
+/** Course content, with video paths resolved to playable URLs. */
+export const course: Course = {
+  ...source,
+  units: source.units.map((unit) => ({
+    ...unit,
+    lessons: unit.lessons.map((lesson) => ({
+      ...lesson,
+      videoUrl: resolveMediaUrl(lesson.videoUrl),
+    })),
+  })),
+};
 
 export function buildPath(source: Course): PathItem[] {
   return source.units.flatMap((unit, unitIndex): PathItem[] => [

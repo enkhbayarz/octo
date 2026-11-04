@@ -41,9 +41,15 @@ describe('GET /v1/courses/:courseId', () => {
     expect(course.units[0].lessons[0]).toMatchObject({
       id: 'u1-l1',
       title: { mn: expect.any(String), en: expect.any(String) },
-      videoUrl: expect.stringMatching(/^https:\/\//),
-      durationSec: expect.any(Number),
+      // No PUBLIC_URL in tests, so the media path comes back as stored.
+      videoUrl: '/media/videos/u1-l1/master.m3u8',
+      durationSec: 739,
     });
+    // The brief: 10–15 minute lesson videos.
+    for (const lesson of course.units.flatMap((unit: any) => unit.lessons)) {
+      expect(lesson.durationSec).toBeGreaterThanOrEqual(600);
+      expect(lesson.durationSec).toBeLessThanOrEqual(900);
+    }
     expect(course.units[0].quiz).toMatchObject({ id: 'u1-quiz', passPercent: 60 });
     expect(course.units[0].quiz.questions[0]).toMatchObject({
       text: '“Hello” гэдэг ямар утгатай вэ?',

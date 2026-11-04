@@ -26,8 +26,8 @@
             "mn": "Өдрийн аль ч цагт хэрхэн мэндлэх, “Сайн уу?” гэж асуухыг сурна.",
             "en": "Learn how to greet people at any time of day and ask “How are you?”."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u1-l1/master.m3u8",
+          "durationSec": 739,
           "phrases": [
             {
               "en": "Hello!",
@@ -53,8 +53,8 @@
             "mn": "Нэр, нас, хаана амьдардгаа англиар энгийнээр хэлж сурна.",
             "en": "Say your name, age and where you live in simple English."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u1-l2/master.m3u8",
+          "durationSec": 696,
           "phrases": [
             {
               "en": "My name is Bold.",
@@ -80,8 +80,8 @@
             "mn": "Улс, хотоо англиар хэлэх энгийн хэллэгүүд.",
             "en": "Simple phrases for saying which country and city you’re from."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u1-l3/master.m3u8",
+          "durationSec": 845,
           "phrases": [
             {
               "en": "Where are you from?",
@@ -107,8 +107,8 @@
             "mn": "Нэгээс арав хүртэлх тоог зөв дуудаж, хэрэглэж сурна.",
             "en": "Pronounce and use the numbers one to ten."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u1-l4/master.m3u8",
+          "durationSec": 726,
           "phrases": [
             {
               "en": "One, two, three",
@@ -134,8 +134,8 @@
             "mn": "Яриагаа эелдгээр дуусгаж, баяртай гэх олон арга.",
             "en": "Polite ways to end a conversation and say goodbye."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u1-l5/master.m3u8",
+          "durationSec": 626,
           "phrases": [
             {
               "en": "Goodbye!",
@@ -201,8 +201,8 @@
             "mn": "Талархал илэрхийлэх, уучлал гуйх эелдэг хэллэгүүд.",
             "en": "Polite phrases for thanking someone and apologising."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u2-l1/master.m3u8",
+          "durationSec": 900,
           "phrases": [
             {
               "en": "Thank you!",
@@ -228,8 +228,8 @@
             "mn": "Цаг хэд болж байгааг асууж, хариулж сурна.",
             "en": "Ask for the time and tell someone what time it is."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u2-l2/master.m3u8",
+          "durationSec": 900,
           "phrases": [
             {
               "en": "What time is it?",
@@ -255,8 +255,8 @@
             "mn": "Кафе, ресторанд захиалга өгч, тооцоогоо хийх хэллэгүүд.",
             "en": "Order at a café or restaurant and ask for the bill."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u2-l3/master.m3u8",
+          "durationSec": 900,
           "phrases": [
             {
               "en": "I would like a coffee.",
@@ -282,8 +282,8 @@
             "mn": "Хаана байгааг асууж, зам зааврыг ойлгож сурна.",
             "en": "Ask where places are and follow simple directions."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u2-l4/master.m3u8",
+          "durationSec": 900,
           "phrases": [
             {
               "en": "Where is the bus stop?",
@@ -309,8 +309,8 @@
             "mn": "Өнөөдрийн цаг агаарын талаар энгийнээр ярилцах.",
             "en": "Talk about today’s weather in simple English."
           },
-          "videoUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_2MB.mp4",
-          "durationSec": 10,
+          "videoUrl": "/media/videos/u2-l5/master.m3u8",
+          "durationSec": 900,
           "phrases": [
             {
               "en": "It’s sunny today.",

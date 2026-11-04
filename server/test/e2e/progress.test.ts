@@ -166,8 +166,8 @@ describe('video progress', () => {
 
   test('values beyond the video are clamped to its length', async () => {
     const { token } = await app.newLearner();
-    const { body } = await save(token, 'u1-l1', 999, 999);
-    expect(body.data).toMatchObject({ positionSec: 10, furthestSec: 10 });
+    const { body } = await save(token, 'u1-l1', 5_000, 5_000);
+    expect(body.data).toMatchObject({ positionSec: 739, furthestSec: 739 }); // u1-l1 is 12:19
   });
 
   test('finished lessons drop their resume point and ignore new ones', async () => {
