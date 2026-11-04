@@ -1,13 +1,24 @@
-import { VideoView, type VideoPlayer, type VideoPlayerStatus } from 'expo-video';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
+import { StatusBar } from 'expo-status-bar';
+import {
+  isPictureInPictureSupported,
+  VideoView,
+  type VideoPlayer,
+  type VideoPlayerStatus,
+} from 'expo-video';
+import { useRef, useState } from 'react';
+import { ActivityIndicator, Modal, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LottieIcon } from '@/components/lottie-icon';
 import { AppText } from '@/components/ui/app-text';
 import { Icon } from '@/components/ui/icon';
 import { useT } from '@/i18n';
 import { makeStyles, useColors } from '@/theme/theme';
-import { controlHeight, gutter, radius, space } from '@/theme/tokens';
+import { controlHeight, radius, space } from '@/theme/tokens';
+
+import { VideoControls } from './video-controls';
 
 type LessonVideoProps = {
   player: VideoPlayer;
@@ -16,27 +27,98 @@ type LessonVideoProps = {
   onRetry: () => void;
 };
 
+const canPictureInPicture = isPictureInPictureSupported();
+
+const lock = (orientation: ScreenOrientation.OrientationLock) =>
+  ScreenOrientation.lockAsync(orientation).catch(() => {});
+
+type PlayerSurfaceProps = {
+  player: VideoPlayer;
+  status: VideoPlayerStatus;
+  fullscreen: boolean;
+  onToggleFullscreen: () => void;
+  showControls: boolean;
+  onFirstFrame?: () => void;
+};
+
+/** The picture plus our controls. Inline and fullscreen each render one, sharing the player. */
+function PlayerSurface({
+  player,
+  status,
+  fullscreen,
+  onToggleFullscreen,
+  showControls,
+  onFirstFrame,
+}: PlayerSurfaceProps) {
+  const view = useRef<VideoView>(null);
+  return (
+    <>
+      <VideoView
+        ref={view}
+        player={player}
+        style={StyleSheet.absoluteFill}
+        nativeControls={false}
+        contentFit="contain"
+        allowsPictureInPicture={canPictureInPicture}
+        onFirstFrameRender={onFirstFrame}
+      />
+      {showControls ? (
+        <VideoControls
+          player={player}
+          status={status}
+          fullscreen={fullscreen}
+          onToggleFullscreen={onToggleFullscreen}
+          onPictureInPicture={
+            canPictureInPicture
+              ? () => {
+                  view.current?.startPictureInPicture().catch(() => {});
+                }
+              : null
+          }
+        />
+      ) : null}
+    </>
+  );
+}
+
 /**
- * Native player controls (play/pause, seek, fullscreen) are familiar, accessible
- * and handled by the OS; we only add the loading and error states around them.
+ * The lesson video, edge to edge, with our own controls (VideoControls).
+ * Fullscreen is ours too: a landscape modal with the same player and controls.
+ * The app turns to landscape while it's open and back to portrait after.
  */
 export function LessonVideo({ player, status, isOffline, onRetry }: LessonVideoProps) {
   const styles = useStyles();
   const t = useT();
   const colors = useColors();
+  const insets = useSafeAreaInsets();
+  const [fullscreen, setFullscreen] = useState(false);
+  // Until the first frame, loading covers the frame; after that a stall only shows a spinner.
+  const [hasFrame, setHasFrame] = useState(false);
+
+  const enterFullscreen = () => {
+    setFullscreen(true);
+    lock(ScreenOrientation.OrientationLock.LANDSCAPE);
+  };
+  const exitFullscreen = () => {
+    setFullscreen(false);
+    lock(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+  };
+
   return (
     <View style={styles.frame}>
       <View style={styles.clip}>
-        <VideoView
-          player={player}
-          style={StyleSheet.absoluteFill}
-          nativeControls
-          contentFit="contain"
-          fullscreenOptions={{ enable: true }}
-          allowsPictureInPicture={false}
-        />
+        {fullscreen ? null : (
+          <PlayerSurface
+            player={player}
+            status={status}
+            fullscreen={false}
+            onToggleFullscreen={enterFullscreen}
+            showControls={hasFrame && status !== 'error'}
+            onFirstFrame={() => setHasFrame(true)}
+          />
+        )}
 
-        {status === 'loading' ? (
+        {!hasFrame && status !== 'error' ? (
           <Animated.View exiting={FadeOut} style={styles.overlay} pointerEvents="none">
             <ActivityIndicator color={colors.sun} size="large" />
             <AppText variant="label" color={colors.white} style={styles.dim}>
@@ -72,23 +154,53 @@ export function LessonVideo({ player, status, isOffline, onRetry }: LessonVideoP
           </Animated.View>
         ) : null}
       </View>
+
+      <Modal
+        visible={fullscreen}
+        animationType="fade"
+        supportedOrientations={['landscape-left', 'landscape-right']}
+        onRequestClose={exitFullscreen}
+      >
+        <StatusBar hidden />
+        {/* The picture and controls stay clear of the Dynamic Island and the home indicator. */}
+        <View
+          style={[
+            styles.fullscreen,
+            { paddingLeft: insets.left, paddingRight: insets.right, paddingBottom: insets.bottom },
+          ]}
+        >
+          <View style={styles.fullscreenSafe}>
+            <PlayerSurface
+              player={player}
+              status={status}
+              fullscreen
+              onToggleFullscreen={exitFullscreen}
+              showControls={status !== 'error'}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const useStyles = makeStyles((colors) => ({
+  // Full width, like every video app: the picture is as large as the phone allows.
   frame: {
-    marginHorizontal: gutter,
+    width: '100%',
     aspectRatio: 16 / 9,
-    borderRadius: radius.lg,
     backgroundColor: colors.video,
-    boxShadow: `0 16px 32px -16px ${colors.shadow}`,
   },
-  // Clipping lives on an inner view: on iOS, clipping the frame would also hide its shadow.
   clip: {
     flex: 1,
-    borderRadius: radius.lg,
     overflow: 'hidden',
+  },
+  fullscreen: {
+    flex: 1,
+    backgroundColor: colors.video,
+  },
+  fullscreenSafe: {
+    flex: 1,
   },
   overlay: {
     ...StyleSheet.absoluteFill,

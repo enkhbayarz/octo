@@ -24,7 +24,7 @@
     },
     "plugins": [
       "expo-router",
-      "expo-video",
+      ["expo-video", { "supportsPictureInPicture": true }],
       ["expo-screen-orientation", { "initialOrientation": "PORTRAIT_UP" }],
       [
         "expo-notifications",
