@@ -3,7 +3,7 @@
     "name": "OctoLearn",
     "slug": "octolearn",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "octolearn",
     "userInterfaceStyle": "automatic",
@@ -25,6 +25,7 @@
     "plugins": [
       "expo-router",
       "expo-video",
+      ["expo-screen-orientation", { "initialOrientation": "PORTRAIT_UP" }],
       [
         "expo-notifications",
         {

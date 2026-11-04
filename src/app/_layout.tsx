@@ -13,6 +13,7 @@ import {
   Stack,
   ThemeProvider,
 } from 'expo-router';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -34,6 +35,8 @@ import { makeStyles, useColors, useScheme } from '@/theme/theme';
 import { gutter, space } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
+// The app is portrait; only a fullscreen lesson video unlocks rotation (lesson-video.tsx).
+ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
 
 /**
  * Where a guarded route sends a learner without a name (and what sits under
