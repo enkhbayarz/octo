@@ -28,6 +28,7 @@ Run `bun run check` (typecheck, lint, format, tests) before declaring any task d
 - `src/app/` holds thin route files only. Screens and their private components live in `src/features/<area>/`.
 - Progress logic belongs in `src/progress/rules.ts` and `selectors.ts` as pure functions with `today` passed in. Test them with `bun test` next to the file. The Zustand store only wires the rules up.
 - Never hard-code sizes or colors: use `src/theme/tokens.ts` (4pt spacing, radius steps, type scale). Colors come from the active theme via `useColors()` or `makeStyles((colors) => …)`, so they work in light and dark. Use `card` for surfaces and `white` only on colored fills. Render text with `AppText`.
+- `server/` is a separate Node project (the API) with its own `package.json`, `bun run check` and `server/README.md`. The app's tsconfig, ESLint, Metro and `bun test` all ignore it. Never import server code into the app.
 - `bun run e2e` runs every Maestro flow in `.maestro/` in order against Expo Go (Metro on port 8081). `bun run coverage` shows unit test coverage.
 - UI strings live in `src/i18n/mn.ts` (source) and `en.ts`, never inline: read them with `const t = useT()`. Localized course fields use `localize(text, useLocale())`. The default language is Mongolian. Keep the app Expo Go compatible: no libraries outside the Expo Go bundle.
 

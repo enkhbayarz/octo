@@ -73,6 +73,7 @@ src/
   theme/                tokens (light + dark palettes, 4pt spacing, radius, type scale) and hooks
 .maestro/               end-to-end test of the core flow
 scripts/send-push.ts    test remote push through Expo's push service
+server/                 the API (Node, Hono, Postgres, Redis, Clerk) deployed on Railway: see server/README.md
 ```
 
 It follows Expo's recommended layout (`src/app` for routes only, kebab-case files, tests next to the code they test) and organises screens by feature.
