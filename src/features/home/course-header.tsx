@@ -54,6 +54,7 @@ export function CourseHeader({
       <View style={styles.row}>
         <Pressable
           onPress={toggle('course')}
+          hitSlop={4}
           accessibilityRole="button"
           accessibilityState={{ expanded: panel === 'course' }}
           style={({ pressed }) => [

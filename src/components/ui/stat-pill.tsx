@@ -31,6 +31,7 @@ export function StatPill({
   return (
     <Pressable
       onPress={onPress}
+      hitSlop={4}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       accessibilityState={{ expanded }}

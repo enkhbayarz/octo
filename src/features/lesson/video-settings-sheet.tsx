@@ -178,7 +178,7 @@ const useStyles = makeStyles((colors) => ({
   },
   chip: {
     flex: 1,
-    height: controlHeight.pill,
+    height: controlHeight.control,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radius.full,
