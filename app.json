@@ -60,6 +60,18 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ffa2fef4-693b-4672-83a0-d775b461a5ab"
+      }
+    },
+    "owner": "olula",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ffa2fef4-693b-4672-83a0-d775b461a5ab"
     }
   }
 }
