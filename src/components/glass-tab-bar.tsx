@@ -26,7 +26,9 @@ const BAR_HEIGHT = 62;
 const BAR_PADDING = 4;
 
 function barBottom(safeBottom: number) {
-  return safeBottom > 0 ? safeBottom - space[2] : space[3];
+  if (safeBottom === 0) return space[3];
+  // The bar can sit low over iOS's home indicator, but must clear Android's gesture bar.
+  return hasSystemBlur ? safeBottom - space[2] : safeBottom + space[1];
 }
 
 /** Bottom padding for tab screens, so their last row scrolls clear of the floating bar. */
