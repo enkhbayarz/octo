@@ -2,18 +2,20 @@
 
 A mobile prototype for learning English: a zigzag learning path, video lessons, unit quizzes and a profile. The UI is in Mongolian (default) and English. **Expo SDK 58 + TypeScript** for iOS and Android, with an optional **Node + PostgreSQL** API deployed on Railway.
 
-| Deliverable           | Where                                                             |
-| --------------------- | ----------------------------------------------------------------- |
-| Android APK           | SUBMISSION_APK_LINK                                               |
-| iOS Simulator build   | SUBMISSION_IOS_LINK                                               |
-| Demo video            | SUBMISSION_DEMO_LINK                                              |
-| Live API              | [API reference](https://api-production-bed0e.up.railway.app/docs) |
-| Architecture write-up | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                      |
-| Design write-up       | [docs/DESIGN.md](docs/DESIGN.md)                                  |
+| Deliverable           | Where                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| Android APK           | [Download](https://expo.dev/artifacts/eas/zEvwLxvLlo3E3_aAybN9J-T1QXmKkPt-CWLgEG6doRQ.apk)    |
+| iOS Simulator build   | [Download](https://expo.dev/artifacts/eas/8e-Px6C3mTo3Ym0zDFHehpQjYEv2uzkk-bMYQDSdGmw.tar.gz) |
+| Demo video            | Attached to the submission email                                                              |
+| Live API              | [API reference](https://api-production-bed0e.up.railway.app/docs)                             |
+| Architecture write-up | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                                  |
+| Design write-up       | [docs/DESIGN.md](docs/DESIGN.md)                                                              |
 
 ## Run it
 
 **Fastest:** install the APK above. No account is needed: the app works as a guest, and offline apart from streaming the video.
+
+**iOS Simulator:** download the build above, extract it, and drag `OctoLearn.app` onto a running simulator.
 
 **From source:** you need Node **22.13+**, [Bun](https://bun.sh), and Expo Go for SDK 58 on a phone or simulator.
 
@@ -115,6 +117,7 @@ More detail, with the alternatives I rejected, is in [docs/ARCHITECTURE.md](docs
 - **A1 lesson videos.** The videos are real Octolearn lessons about learning languages, not the A1 phrases themselves. The phrases stay in the lesson text and quizzes.
 - **Production sign-in.** Clerk runs on its development instance, and Google and Apple use a browser sheet rather than native buttons.
 - **TestFlight.** The iOS build is for the Simulator.
+- **One Maestro flow is incomplete.** `07-account` passes sign-up and sync, then stops at the iOS sign-out alert: its tap doesn't register under Maestro. Sign-out and signing back in were tested by hand on both builds instead.
 - **Account reset.** Signed-in learners can't reset their progress yet: the API has no endpoint for it, so the app hides the button.
 
 ## With more time
