@@ -28,7 +28,7 @@ bun run start        # scan the QR code with Expo Go, or press i / a
 
 - **Lessons are real 10–15 minute videos.** You don't have to watch them: drag the seek bar past 90% and **Дуусгах** unlocks.
 - **Start over:** Профайл → ⚙ Тохиргоо → **Ахиц дахин эхлүүлэх**. It also clears the name, so onboarding shows again.
-- **Test the reset as a guest.** It only clears the device, so a signed-in account gets its progress back on the next sync.
+- **Reset is for guests.** Signed-in learners see **Гарах** there instead, because their progress lives in the account.
 - **Sign-in is optional.** Email sign-in uses a 6-digit code.
 
 | Script                                            | What it does                                            |
@@ -115,7 +115,7 @@ More detail, with the alternatives I rejected, is in [docs/ARCHITECTURE.md](docs
 - **A1 lesson videos.** The videos are real Octolearn lessons about learning languages, not the A1 phrases themselves. The phrases stay in the lesson text and quizzes.
 - **Production sign-in.** Clerk runs on its development instance, and Google and Apple use a browser sheet rather than native buttons.
 - **TestFlight.** The iOS build is for the Simulator.
-- **Server-side reset.** Reset clears only the device.
+- **Account reset.** Signed-in learners can't reset their progress yet: the API has no endpoint for it, so the app hides the button.
 
 ## With more time
 
