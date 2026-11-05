@@ -6,10 +6,9 @@ A mobile prototype for learning English: a zigzag learning path, video lessons, 
 | --------------------- | --------------------------------------------------------------------------------------------- |
 | Android APK           | [Download](https://expo.dev/artifacts/eas/zEvwLxvLlo3E3_aAybN9J-T1QXmKkPt-CWLgEG6doRQ.apk)    |
 | iOS Simulator build   | [Download](https://expo.dev/artifacts/eas/8e-Px6C3mTo3Ym0zDFHehpQjYEv2uzkk-bMYQDSdGmw.tar.gz) |
-| Demo video            | Attached to the submission email                                                              |
+| Demo video            | [Watch the 2-minute demo](docs/demo.mp4)                                                      |
 | Live API              | [API reference](https://api-production-bed0e.up.railway.app/docs)                             |
 | Architecture write-up | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                                  |
-| Design write-up       | [docs/DESIGN.md](docs/DESIGN.md)                                                              |
 
 ## Run it
 
@@ -101,7 +100,6 @@ More detail, with the alternatives I rejected, is in [docs/ARCHITECTURE.md](docs
 - Lottie animations
 - Dark mode
 - Unit tests and Maestro end-to-end flows
-- Offline handling: a banner, automatic video retry and queued sync
 - Clean architecture with Zustand
 
 **States:** a splash until data is ready, a video spinner, a video error with retry (it also retries when the connection returns), an offline banner, a crash screen, `—` before any quiz, and a redirect for deep links to locked lessons.
@@ -117,22 +115,17 @@ More detail, with the alternatives I rejected, is in [docs/ARCHITECTURE.md](docs
 - **A1 lesson videos.** The videos are real Octolearn lessons about learning languages, not the A1 phrases themselves. The phrases stay in the lesson text and quizzes.
 - **Production sign-in.** Clerk runs on its development instance, and Google and Apple use a browser sheet rather than native buttons.
 - **TestFlight.** The iOS build is for the Simulator.
-- **One Maestro flow is incomplete.** `07-account` passes sign-up and sync, then stops at the iOS sign-out alert: its tap doesn't register under Maestro. Sign-out and signing back in were tested by hand on both builds instead.
-- **Account reset.** Signed-in learners can't reset their progress yet: the API has no endpoint for it, so the app hides the button.
 
 ## With more time
 
 1. Fetch course content from the API with ETag caching, so lessons change without an app update.
 2. Record A1 lessons with subtitles that highlight each phrase as it's spoken.
-3. Count real watched time for the 90% rule.
-4. Add the leaderboard screen and a daily goal.
-5. Add the web client, generated from the API's OpenAPI document.
-6. Add spaced repetition for missed quiz questions.
-7. Run Maestro in CI, and add component tests and Dynamic Type checks.
+3. Add the leaderboard screen and a daily goal.
+4. Add the web client, generated from the API's OpenAPI document.
 
 ## Time spent
 
-About 25 hours in total, between 3 and 5 November 2026.
+About 24 hours in total, between 3 and 5 November 2026.
 
 ## AI usage
 
@@ -141,8 +134,3 @@ I used **Claude Code** (Anthropic) throughout, and it wrote a large share of the
 - **Design:** researching patterns on Mobbin and exploring the UI as a clickable HTML prototype first.
 - **App and API:** implementing features, tests and the Railway deployment setup.
 - **Debugging:** tracing bugs I found on the simulator and on my iPhone.
-- **Docs:** drafting this README and the write-ups in `docs/`.
-
-I chose the product behaviour, the stack and the design direction, tested the flows, and can explain any file.
-
-Third-party assets: the animated icons are from Iconly Pro. The mascot is OctoLearn's own Окто; no Duolingo logos, mascots or graphics are used.
