@@ -32,11 +32,8 @@ name: Unit 1
     direction: UP
     centerElement: true
 - tapOn: 'Мэндчилгээ, идэвхтэй'
-# Finish stays disabled until 90% is watched (the rule itself is unit-tested).
-- assertVisible:
-    text: 'Дуусгах'
-    enabled: false
-- assertVisible: 'Видеоны 90%-ийг үзэхэд идэвхжинэ.*'
+# Finish stays disabled until 90% is watched: that rule is unit-tested, not checked here,
+# because e2e lessons start 3s before the end and a cached video unlocks it at once.
 - assertVisible: '.*Хичээл 1 / 5'
 - assertVisible: 'ЭНЭ ХИЧЭЭЛЭЭР СУРАХ ХЭЛЛЭГҮҮД'
 - assertVisible: 'Hello!'
