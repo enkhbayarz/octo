@@ -8,6 +8,11 @@ appId: host.exp.Exponent
     visibilityPercentage: 100
     centerElement: true
 - tapOn: 'Гарах'
+# A tap lands before the alert accepts touches unless it has finished appearing.
+- extendedWaitUntil:
+    visible: 'Профайлаас гарах уу?'
+    timeout: 5000
+- waitForAnimationToEnd
 # The alert's confirm button has the same label; it is the second match.
 - tapOn:
     text: 'Гарах'
