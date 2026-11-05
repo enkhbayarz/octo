@@ -58,6 +58,10 @@ name: Account and sync
 - inputText: '424242'
 
 # The guest's lesson uploads to the new account; Settings shows it saved.
+# The profile is still scrolled down to the card, so the gear is above the fold.
+- scrollUntilVisible:
+    element: 'Тохиргоо'
+    direction: UP
 - runFlow: subflows/open-settings.yaml
 - scrollUntilVisible:
     element: 'Бүх ахиц хадгалагдсан'
