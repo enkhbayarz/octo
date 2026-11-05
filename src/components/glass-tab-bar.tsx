@@ -12,12 +12,14 @@ import { makeStyles, useColors, useScheme } from '@/theme/theme';
 import { radius, space } from '@/theme/tokens';
 
 /**
- * Liquid Glass tab bars are drawn by iOS 26 itself. Earlier iOS versions get
- * this look-alike: a floating capsule of system blur with a rim highlight and
- * a sliding lens. iOS 26+ and Android keep the real native tabs.
+ * Liquid Glass tab bars are drawn by iOS 26 itself, so it keeps the real native
+ * tabs. Everything else gets this look-alike: a floating capsule with a rim
+ * highlight and a sliding lens. Earlier iOS blurs what's behind it; Android has
+ * no system blur, so its capsule is solid.
  */
-export const usesGlassTabBar =
-  Platform.OS === 'ios' && Number.parseInt(String(Platform.Version), 10) < 26;
+const hasSystemBlur = Platform.OS === 'ios';
+
+export const usesGlassTabBar = !hasSystemBlur || Number.parseInt(String(Platform.Version), 10) < 26;
 
 const TAB_WIDTH = 96;
 const BAR_HEIGHT = 62;
@@ -54,12 +56,16 @@ export function GlassTabBar({
   return (
     <View style={[styles.host, { bottom: barBottom(insets.bottom) }]} pointerEvents="box-none">
       <View style={[styles.bar, { width }]} accessibilityRole="tablist">
-        <BlurView
-          tint={scheme === 'dark' ? 'systemUltraThinMaterialDark' : 'systemUltraThinMaterialLight'}
-          intensity={100}
-          style={styles.fill}
-        />
-        <View style={[styles.fill, styles.wash]} />
+        {hasSystemBlur ? (
+          <BlurView
+            tint={
+              scheme === 'dark' ? 'systemUltraThinMaterialDark' : 'systemUltraThinMaterialLight'
+            }
+            intensity={100}
+            style={styles.fill}
+          />
+        ) : null}
+        <View style={[styles.fill, hasSystemBlur ? styles.wash : styles.solid]} />
         {/* Light catching the top edge, fading out and back in along the bottom. */}
         <Svg width={width} height={BAR_HEIGHT} style={styles.fill} pointerEvents="none">
           <Defs>
@@ -154,6 +160,9 @@ const useStyles = makeStyles((colors) => ({
   },
   wash: {
     backgroundColor: colors.glass,
+  },
+  solid: {
+    backgroundColor: colors.card,
   },
   lens: {
     position: 'absolute',

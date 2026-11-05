@@ -64,7 +64,7 @@ const light = {
   videoBuffered: 'rgba(255, 255, 255, 0.55)',
   shadow: 'rgba(28, 25, 23, 0.5)',
 
-  /** Floating glass tab bar (iOS 18 and earlier): wash over the blur, rim light and selected lens. */
+  /** Floating tab bar (Android, iOS 18 and earlier): wash over the blur, rim light and selected lens. */
   glass: 'rgba(255, 255, 255, 0.42)',
   glassRim: 'rgba(255, 255, 255, 0.9)',
   glassEdge: 'rgba(28, 25, 23, 0.08)',

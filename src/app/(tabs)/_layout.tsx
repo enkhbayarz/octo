@@ -8,8 +8,8 @@ import { useColors } from '@/theme/theme';
 import { fonts } from '@/theme/tokens';
 
 /**
- * Native tab bar: Liquid Glass on iOS 26, Material 3 on Android.
- * iOS 18 and earlier draw a glass look-alike instead (GlassTabBar).
+ * Native tab bar on iOS 26 (Liquid Glass). Earlier iOS and Android draw a
+ * matching floating capsule instead (GlassTabBar).
  * Lessons and quizzes are pushed on the root stack, so they cover the tabs.
  */
 export default function TabsLayout() {
