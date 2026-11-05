@@ -216,6 +216,8 @@ export const en: Messages = {
     totalXp: 'Total XP',
     lessonsDone: 'Lessons done',
     quizzesPassed: 'Quizzes passed',
+    quizAverage: 'Quiz average',
+    courseProgress: 'Course progress',
     overview: 'Overview',
     thisWeek: 'This week',
     today: 'Today',

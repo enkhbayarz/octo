@@ -8,6 +8,7 @@ import { AppText } from '@/components/ui/app-text';
 import { Icon } from '@/components/ui/icon';
 import { IconButton } from '@/components/ui/icon-button';
 import { ProgressBar } from '@/components/ui/progress-bar';
+import { ProgressRing } from '@/components/ui/progress-ring';
 import { quizCount } from '@/course';
 import { useT } from '@/i18n';
 import { fromDayKey, today } from '@/lib/dates';
@@ -133,6 +134,26 @@ export function ProfileScreen() {
             icon={(color) => <LottieIcon name="star" color={color} delay={600} />}
             value={`${stats.quizzesPassed} / ${quizCount}`}
             label={t.profile.quizzesPassed}
+          />
+          <StatTile
+            tone="sky"
+            icon={(color) => <LottieIcon name="target" color={color} delay={700} />}
+            value={stats.averageScore === null ? '—' : `${stats.averageScore}%`}
+            label={t.profile.quizAverage}
+          />
+          <StatTile
+            tone="primary"
+            icon={(color) => (
+              <ProgressRing
+                percent={course.percent}
+                size={20}
+                stroke={3.5}
+                color={color}
+                trackColor={colors.primaryMid}
+              />
+            )}
+            value={`${course.percent}%`}
+            label={t.profile.courseProgress}
           />
         </View>
 
