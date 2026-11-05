@@ -101,9 +101,11 @@ name: Unit 2 and course complete
     timeout: 10000
 
 # Upcoming units are announced but not open.
+# The course-complete card sits at the top, so this scrolls the whole path.
 - scrollUntilVisible:
     element: 'Нисэх буудал, түгжээтэй'
     direction: DOWN
+    timeout: 60000
 - assertVisible: 'Тун удахгүй'
 - tapOn: 'Нисэх буудал, түгжээтэй'
 - assertVisible: 'Тун удахгүй'
