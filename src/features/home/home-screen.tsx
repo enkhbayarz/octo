@@ -181,7 +181,10 @@ export function HomeScreen() {
   };
 
   useEffect(() => {
-    if (didInitialScroll.current) scrollToActive(shownActiveId, true);
+    if (!didInitialScroll.current) return;
+    // Nothing left to scroll to once the course is done: show its card at the top.
+    if (shownActiveId) scrollToActive(shownActiveId, true);
+    else scrollRef.current?.scrollTo({ y: 0, animated: true });
     // Only re-run when the focused active item changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shownActiveId]);
